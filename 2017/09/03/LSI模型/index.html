@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="推荐,LSI,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.2">
+
+
+
+
+
+
+<meta name="description" content="LSILSI(潜层语义索引)能够把文档映射到一组语义向量。比如“宝马”的一个语义是“车”，“奔驰”的一个语义也是“车”。那么“宝马”和“奔驰”就有了关系。这种关系可以运用在推荐领域。从某种角度看，LSI和因子模型非常类似。都是用某种“因子”向量来表示数据。 数据从豆瓣上面爬下来的19186部电影，3408个用户，以及93209条评分。 结合 从数据库中获取节目id和节目的描述itemInfos 1">
+<meta name="keywords" content="推荐,LSI">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LSI模型">
+<meta property="og:url" content="https://dhjack.github.io/2017/09/03/LSI模型/index.html">
+<meta property="og:site_name" content="DHJACK&#39;s Blog">
+<meta property="og:description" content="LSILSI(潜层语义索引)能够把文档映射到一组语义向量。比如“宝马”的一个语义是“车”，“奔驰”的一个语义也是“车”。那么“宝马”和“奔驰”就有了关系。这种关系可以运用在推荐领域。从某种角度看，LSI和因子模型非常类似。都是用某种“因子”向量来表示数据。 数据从豆瓣上面爬下来的19186部电影，3408个用户，以及93209条评分。 结合 从数据库中获取节目id和节目的描述itemInfos 1">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-09-07T09:13:01.699Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="LSI模型">
+<meta name="twitter:description" content="LSILSI(潜层语义索引)能够把文档映射到一组语义向量。比如“宝马”的一个语义是“车”，“奔驰”的一个语义也是“车”。那么“宝马”和“奔驰”就有了关系。这种关系可以运用在推荐领域。从某种角度看，LSI和因子模型非常类似。都是用某种“因子”向量来表示数据。 数据从豆瓣上面爬下来的19186部电影，3408个用户，以及93209条评分。 结合 从数据库中获取节目id和节目的描述itemInfos 1">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://dhjack.github.io/2017/09/03/LSI模型/">
+
+
+
+
+
+  <title>LSI模型 | DHJACK's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">DHJACK's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://dhjack.github.io/2017/09/03/LSI模型/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="D.H.Jack">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/xiongwen_circle_avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DHJACK's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">LSI模型</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-03T11:51:28+08:00">
+                2017-09-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="LSI"><a href="#LSI" class="headerlink" title="LSI"></a>LSI</h2><p>LSI(潜层语义索引)能够把文档映射到一组语义向量。比如“宝马”的一个语义是“车”，“奔驰”的一个语义也是“车”。那么“宝马”和“奔驰”就有了关系。这种关系可以运用在推荐领域。从某种角度看，LSI和因子模型非常类似。都是用某种“因子”向量来表示数据。</p>
+<h2 id="数据"><a href="#数据" class="headerlink" title="数据"></a>数据</h2><p>从豆瓣上面爬下来的19186部电影，3408个用户，以及93209条评分。</p>
+<h2 id="结合"><a href="#结合" class="headerlink" title="结合"></a>结合</h2><ol>
+<li><p>从数据库中获取节目id和节目的描述<code>itemInfos</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; for k, v in itemInfos.iteritems():</span><br><span class="line">...   print k, v</span><br><span class="line">... </span><br><span class="line">1441794 19世纪末到20世纪初，这当中的二三十年说短不短说长也不长。对于中国，则是风云变化的几十年。在这当中，中国自二次鸦片战争后，又经历了洋务运动、甲午战争、戊戌变法、辛亥革命、二次革命等。其中，中国结束了清朝的统治，走向了民国；新思潮开始传来，旧制度渐渐走向衰退。千疮百孔的中国也正向着更光明的明天前进着。</span><br><span class="line">在这二三十年的历史河流中，留下了许多亦正亦邪的人物，慈禧太后（吕中 饰）、李鸿章（王冰 饰）、袁世凯（孙淳 饰）、孙中山（马少骅 饰）等他们被记载在历史课本里，和中国的历史相挂钩。借由这部剧，让我们再回顾一下那个时代，那个风起云涌变化万千的时代。前路虽然艰辛，但我们也正一步步向前迈进。©豆瓣</span><br><span class="line">3080195 1980年代初，上海某造船厂锻压车间有一群已到结婚年龄但仍无女朋友的光棍汉，他们在班长石奇龙（刘信义）的带领下，有时会聚餐发泄一下当工人的种种不好——钱少、地位低、无女孩瞧得上之类，并做出一些痞气的行为，但总体来讲，他们是快乐的。性情温良的刘铁（马晓伟）虽生活在他们中间，但多少显得有些不合群，一因他的文化程度相比较高，有了空闲时间就会读书、写有关技术改进的文章，二因他自称是坚定的单身主义者。</span><br><span class="line">厂办夜校来了位美丽的名叫丁玉洁（龚雪）的女教师，光棍汉一时看傻了眼，可是一听她要抓他们去读书学习，每个人都想逃开，但在车间主任秦德昌（战车）的“逼压”下，他们还是来到了课堂，而课堂上的一场矛盾、车间里的一次工作失误过后，他们也意识到知识的重要，开始认真上课，其中前后对比最强烈的，当属石奇龙。期间，刘铁的表现又是不合群：知晓丁玉洁来到厂里后，他常常有意将她避开。</span><br><span class="line">厂里为解决光棍汉的婚姻问题，出谋划策搞了联谊会，结果也是出奇的好，几个老光棍都交上了女朋友。石奇龙虽一无所获，却并不心急，他已经慢慢地爱上了丁玉洁。但丁玉洁早已心属刘铁：两人曾在文革中共患难，已相好多年。刘铁避开她，且在她将他认出激动地表达相思之情时态度异常冷淡，皆有因。©豆瓣</span><br><span class="line">1441796 父亲教儿子识字，通过讲解象形文字说明中国文字的起源。影片借用三十六个活动的象形文字，讲述了一个有趣的故事：红“日”蓝天，远“山”近“水” ，“鸟”在飞翔，“象”在吸水，“森”“林”“草”地，一片翠绿。“夫”骑着“马”儿，穿“竹”林，过“田”野。突然，“夫”从“马”上摔下，“马”跑了，“夫”用“刀”砍“木”，造一“舟”，大“象”将“夫”卷入“舟”中，将“舟”推下了“水”，“水”中有“鱼”。“夫”撒“网”捕“鱼”，“鱼”逃走。空中飞过“燕”子，“日”边出现乌“云”，“云”儿飘移，下起“雨”来，“夫”便用“伞”遮雨。忽而“舟”翻，“夫”落入水中，浪将“夫”推到“石”上，“夫”用“火”取暖。此时，一“龟”游来，驮起“夫”，“夫”又回到“舟”上。“夫”随小“鸟”的引导前行，见一“虎”正追一“鹿”、一“猪”和一“叟”，“夫”拉“弓”射箭，“虎”即死去。“叟”进入“舍”内，将一只“羊”送给“夫”，“夫”牵“羊”来到河边，地上有“花”，又见一小“虎”在哭。“夫”设法将“虎”、“羊”、“花”运到对岸。这时“夫”才想起跑掉的“马”，便吹口哨，“马”又回到“夫”身旁。“夫”带着一大批动物，让它们回到“森”林，“夫”回到家，“门”里出来一“犬”一“子”，后又出来一“女”子，夫将“花”插在“女”的头上。“子”高兴地喊道：“爸爸给妈妈戴花喽！”此时，天空出现一弯明“月”。</span><br><span class="line">本片于1986年获南斯拉夫第七届萨格勒布国际动画电影节教育片奖。©豆瓣</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>jieba模块导入字典</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>jieba.load_userdict(<span class="string">'./dict.txt.big.txt'</span>)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>导入停用词</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>stopWords = set([line.strip().decode(<span class="string">"gbk"</span>).lower() <span class="keyword">for</span> line <span class="keyword">in</span> open(<span class="string">"./stopWords.txt"</span>)])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>stopWords.add(<span class="string">'\n'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>stopWords.add(<span class="string">' '</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>stopWords.add(<span class="string">u'\u2022'</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>stopWords.add(<span class="string">u'\xa9'</span>)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>分割描述信息</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">for</span> k, v <span class="keyword">in</span> itemInfos.iteritems():</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>    seg_list = [w.lower() <span class="keyword">for</span> w <span class="keyword">in</span> jieba.cut(v, cut_all=<span class="literal">False</span>) <span class="keyword">if</span> w.lower() <span class="keyword">not</span> <span class="keyword">in</span> stopWords]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>    texts.append(list(seg_list))</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">for</span> i <span class="keyword">in</span> texts[<span class="number">0</span>]:</span><br><span class="line"><span class="meta">... </span> <span class="keyword">print</span> i          </span><br><span class="line"><span class="meta">... </span></span><br><span class="line"><span class="number">19</span></span><br><span class="line">世纪末</span><br><span class="line"><span class="number">20</span></span><br><span class="line">世纪</span><br><span class="line">二三十年</span><br><span class="line">说</span><br><span class="line">短</span><br><span class="line">短</span><br><span class="line">说</span><br><span class="line">长</span><br><span class="line">不长</span><br><span class="line">风云</span><br><span class="line">变化</span><br><span class="line">几十年</span><br><span class="line">二次</span><br><span class="line">鸦片战争</span><br><span class="line">后</span><br><span class="line">经历</span><br><span class="line">洋务运动</span><br><span class="line">甲午战争</span><br><span class="line">戊戌变法</span><br><span class="line">辛亥革命</span><br><span class="line">二次革命</span><br><span class="line">清朝</span><br><span class="line">统治</span><br><span class="line">走向</span><br><span class="line">民国</span><br><span class="line">新</span><br><span class="line">思潮</span><br><span class="line">传来</span><br><span class="line">旧</span><br><span class="line">制度</span><br><span class="line">渐渐</span><br><span class="line">走向</span><br><span class="line">衰退</span><br><span class="line">千疮百孔</span><br><span class="line">正向</span><br><span class="line">光明</span><br><span class="line">明天</span><br><span class="line">二三十年</span><br><span class="line">历史</span><br><span class="line">河流</span><br><span class="line">留下</span><br><span class="line">亦正亦邪</span><br><span class="line">人物</span><br><span class="line">慈禧太后</span><br><span class="line">吕中</span><br><span class="line">饰</span><br><span class="line">李鸿章</span><br><span class="line">王冰</span><br><span class="line">饰</span><br><span class="line">袁世凯</span><br><span class="line">孙淳</span><br><span class="line">饰</span><br><span class="line">孙中山</span><br><span class="line">马少骅</span><br><span class="line">饰</span><br><span class="line">记载</span><br><span class="line">历史</span><br><span class="line">课本</span><br><span class="line">里</span><br><span class="line">历史</span><br><span class="line">相</span><br><span class="line">挂钩</span><br><span class="line">借由</span><br><span class="line">这部</span><br><span class="line">剧</span><br><span class="line">再</span><br><span class="line">回顾</span><br><span class="line">时代</span><br><span class="line">风起云涌</span><br><span class="line">变化</span><br><span class="line">万千</span><br><span class="line">时代</span><br><span class="line">前路</span><br><span class="line">艰辛</span><br><span class="line">正</span><br><span class="line">一步步</span><br><span class="line">向前</span><br><span class="line">迈进</span><br><span class="line">豆瓣</span><br><span class="line">&gt;&gt;&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>去掉低频词</p>
+</li>
+<li><p>把词转换为数字id，并将原词数组转换为id的数组</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>dictionary = corpora.Dictionary(texts)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>corpus = [dictionary.doc2bow(text) <span class="keyword">for</span> text <span class="keyword">in</span> texts]</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>corpus</span><br><span class="line">[[(<span class="number">0</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">2</span>), (<span class="number">2</span>, <span class="number">1</span>), (<span class="number">3</span>, <span class="number">1</span>), (<span class="number">4</span>, <span class="number">1</span>), (<span class="number">5</span>, <span class="number">1</span>), (<span class="number">6</span>, <span class="number">1</span>), (<span class="number">7</span>, <span class="number">1</span>), (<span class="number">8</span>, <span class="number">1</span>), (<span class="number">9</span>, <span class="number">1</span>), (<span class="number">10</span>, <span class="number">1</span>), (<span class="number">11</span>, <span class="number">2</span>), (<span class="number">12</span>, <span class="number">1</span>), (<span class="number">13</span>, <span class="number">1</span>), (<span class="number">14</span>, <span class="number">1</span>), (<span class="number">15</span>, <span class="number">1</span>), (<span class="number">16</span>, <span class="number">1</span>), (<span class="number">17</span>, <span class="number">1</span>), (<span class="number">18</span>, <span class="number">1</span>), (<span class="number">19</span>, <span class="number">1</span>), (<span class="number">20</span>, <span class="number">1</span>), (<span class="number">21</span>, <span class="number">1</span>), (<span class="number">22</span>, <span class="number">3</span>), (<span class="number">23</span>, <span class="number">1</span>), (<span class="number">24</span>, <span class="number">1</span>), (<span class="number">25</span>, <span class="number">1</span>), (<span class="number">26</span>, <span class="number">1</span>), (<span class="number">27</span>, <span class="number">1</span>), (<span class="number">28</span>, <span class="number">1</span>), (<span class="number">29</span>, <span class="number">1</span>), (<span class="number">30</span>, <span class="number">1</span>), (<span class="number">31</span>, <span class="number">1</span>), (<span class="number">32</span>, <span class="number">1</span>), (<span class="number">33</span>, <span class="number">1</span>), (<span class="number">34</span>, <span class="number">1</span>), (<span class="number">35</span>, <span class="number">2</span>), (<span class="number">36</span>, <span class="number">1</span>), (<span class="number">37</span>, <span class="number">1</span>), (<span class="number">38</span>, <span class="number">1</span>), (<span class="number">39</span>, <span class="number">2</span>), (<span class="number">40</span>, <span class="number">1</span>), (<span class="number">41</span>, <span class="number">1</span>), (<span class="number">42</span>, <span class="number">1</span>), (<span class="number">43</span>, <span class="number">1</span>), (<span class="number">44</span>, <span class="number">2</span>), (<span class="number">45</span>, <span class="number">1</span>), (<span class="number">46</span>, <span class="number">1</span>), (<span class="number">47</span>, <span class="number">1</span>), (<span class="number">48</span>, <span class="number">1</span>), (<span class="number">49</span>, <span class="number">1</span>), (<span class="number">50</span>, <span class="number">1</span>), (<span class="number">51</span>, <span class="number">1</span>), (<span class="number">52</span>, <span class="number">1</span>), (<span class="number">53</span>, <span class="number">1</span>), (<span class="number">54</span>, <span class="number">1</span>), (<span class="number">55</span>, <span class="number">1</span>), (<span class="number">56</span>, <span class="number">1</span>), (<span class="number">57</span>, <span class="number">1</span>), (<span class="number">58</span>, <span class="number">1</span>), (<span class="number">59</span>, <span class="number">1</span>), (<span class="number">60</span>, <span class="number">1</span>), (<span class="number">61</span>, <span class="number">2</span>), (<span class="number">62</span>, <span class="number">1</span>), (<span class="number">63</span>, <span class="number">4</span>), (<span class="number">64</span>, <span class="number">1</span>), (<span class="number">65</span>, <span class="number">1</span>), (<span class="number">66</span>, <span class="number">1</span>), (<span class="number">67</span>, <span class="number">1</span>), (<span class="number">68</span>, <span class="number">1</span>), (<span class="number">69</span>, <span class="number">1</span>)], [(<span class="number">7</span>, <span class="number">1</span>), (<span class="number">30</span>, <span class="number">1</span>), (<span class="number">45</span>, <span class="number">1</span>), (<span class="number">50</span>, <span class="number">1</span>), (<span class="number">70</span>, <span class="number">1</span>), (<span class="number">71</span>, <span class="number">1</span>), (<span class="number">72</span>, <span class="number">1</span>), (<span class="number">73</span>, <span class="number">1</span>), (<span class="number">74</span>, <span class="number">1</span>), (<span class="number">75</span>, <span class="number">1</span>), (<span class="number">76</span>, <span class="number">1</span>), (<span class="number">77</span>, <span class="number">1</span>), (<span class="number">78</span>, <span class="number">1</span>), (<span class="number">79</span>, <span class="number">1</span>), (<span class="number">80</span>, <span class="number">1</span>), (<span class="number">81</span>, <span class="number">1</span>), (<span class="number">82</span>, <span class="number">1</span>), (<span class="number">83</span>, <span class="number">1</span>), (<span class="number">84</span>, <span class="number">1</span>), (<span class="number">85</span>, <span class="number">1</span>), (<span class="number">86</span>, <span class="number">1</span>), (<span class="number">87</span>, <span class="number">1</span>), (<span class="number">88</span>, <span class="number">1</span>), (<span class="number">89</span>, <span class="number">1</span>), (<span class="number">90</span>, <span class="number">1</span>), (<span class="number">91</span>, <span class="number">1</span>), (<span class="number">92</span>, <span class="number">2</span>), (<span class="number">93</span>, <span class="number">1</span>), (<span class="number">94</span>, <span class="number">1</span>), (<span class="number">95</span>, <span class="number">1</span>), (<span class="number">96</span>, <span class="number">2</span>), (<span class="number">97</span>, <span class="number">1</span>), (<span class="number">98</span>, <span class="number">1</span>), (<span class="number">99</span>, <span class="number">1</span>), (<span class="number">100</span>, <span class="number">1</span>), (<span class="number">101</span>, <span class="number">1</span>), (<span class="number">102</span>, <span class="number">2</span>), (<span class="number">103</span>, <span class="number">4</span>), (<span class="number">104</span>, <span class="number">1</span>), (<span class="number">105</span>, <span class="number">1</span>), (<span class="number">106</span>, <span class="number">1</span>), (<span class="number">107</span>, <span class="number">1</span>), (<span class="number">108</span>, <span class="number">1</span>), (<span class="number">109</span>, <span class="number">1</span>), (<span class="number">110</span>, <span class="number">1</span>), (<span class="number">111</span>, <span class="number">1</span>), (<span class="number">112</span>, <span class="number">1</span>), (<span class="number">113</span>, <span class="number">1</span>), (<span class="number">114</span>, <span class="number">3</span>), (<span class="number">115</span>, <span class="number">1</span>), (<span class="number">116</span>, <span class="number">1</span>), (<span class="number">117</span>, <span class="number">1</span>), (<span class="number">118</span>, <span class="number">1</span>), (<span class="number">119</span>, <span class="number">1</span>), (<span class="number">120</span>, <span class="number">1</span>), (<span class="number">121</span>, <span class="number">1</span>), (<span class="number">122</span>, <span class="number">1</span>), (<span class="number">123</span>, <span class="number">1</span>), (<span class="number">124</span>, <span class="number">1</span>), (<span class="number">125</span>, <span class="number">1</span>), (<span class="number">126</span>, <span class="number">1</span>), (<span class="number">127</span>, <span class="number">1</span>), (<span class="number">128</span>, <span class="number">1</span>), (<span class="number">129</span>, <span class="number">2</span>), (<span class="number">130</span>, <span class="number">3</span>), (<span class="number">131</span>, <span class="number">1</span>), (<span class="number">132</span>, <span class="number">1</span>), (<span class="number">133</span>, <span class="number">1</span>), (<span class="number">134</span>, <span class="number">1</span>), (<span class="number">135</span>, <span class="number">1</span>), (<span class="number">136</span>, <span class="number">1</span>), (<span class="number">137</span>, <span class="number">1</span>), (<span class="number">138</span>, <span class="number">1</span>), (<span class="number">139</span>, <span class="number">1</span>), (<span class="number">140</span>, <span class="number">1</span>), (<span class="number">141</span>, <span class="number">1</span>), (<span class="number">142</span>, <span class="number">1</span>), (<span class="number">143</span>, <span class="number">1</span>), (<span class="number">144</span>, <span class="number">2</span>), (<span class="number">145</span>, <span class="number">1</span>), (<span class="number">146</span>, <span class="number">1</span>), (<span class="number">147</span>, <span class="number">2</span>), (<span class="number">148</span>, <span class="number">1</span>), (<span class="number">149</span>, <span class="number">1</span>), (<span class="number">150</span>, <span class="number">3</span>), (<span class="number">151</span>, <span class="number">1</span>), (<span class="number">152</span>, <span class="number">1</span>), (<span class="number">153</span>, <span class="number">1</span>), (<span class="number">154</span>, <span class="number">1</span>), (<span class="number">155</span>, <span class="number">1</span>), (<span class="number">156</span>, <span class="number">1</span>), (<span class="number">157</span>, <span class="number">1</span>), (<span class="number">158</span>, <span class="number">1</span>), (<span class="number">159</span>, <span class="number">1</span>), (<span class="number">160</span>, <span class="number">1</span>), (<span class="number">161</span>, <span class="number">1</span>), (<span class="number">162</span>, <span class="number">1</span>), (<span class="number">163</span>, <span class="number">1</span>), (<span class="number">164</span>, <span class="number">1</span>), (<span class="number">165</span>, <span class="number">1</span>), (<span class="number">166</span>, <span class="number">1</span>), (<span class="number">167</span>, <span class="number">1</span>), (<span class="number">168</span>, <span class="number">1</span>), (<span class="number">169</span>, <span class="number">1</span>), (<span class="number">170</span>, <span class="number">1</span>), (<span class="number">171</span>, <span class="number">1</span>), (<span class="number">172</span>, <span class="number">2</span>), (<span class="number">173</span>, <span class="number">1</span>), (<span class="number">174</span>, <span class="number">1</span>), (<span class="number">175</span>, <span class="number">1</span>), (<span class="number">176</span>, <span class="number">2</span>), (<span class="number">177</span>, <span class="number">1</span>), (<span class="number">178</span>, <span class="number">1</span>), (<span class="number">179</span>, <span class="number">1</span>), (<span class="number">180</span>, <span class="number">1</span>), (<span class="number">181</span>, <span class="number">2</span>), (<span class="number">182</span>, <span class="number">1</span>), (<span class="number">183</span>, <span class="number">1</span>), (<span class="number">184</span>, <span class="number">1</span>), (<span class="number">185</span>, <span class="number">1</span>), (<span class="number">186</span>, <span class="number">1</span>), (<span class="number">187</span>, <span class="number">1</span>)], [(<span class="number">7</span>, <span class="number">1</span>), (<span class="number">30</span>, <span class="number">1</span>), (<span class="number">45</span>, <span class="number">1</span>), (<span class="number">54</span>, <span class="number">1</span>), (<span class="number">102</span>, <span class="number">1</span>), (<span class="number">188</span>, <span class="number">1</span>), (<span class="number">189</span>, <span class="number">1</span>), (<span class="number">190</span>, <span class="number">1</span>), (<span class="number">191</span>, <span class="number">1</span>), (<span class="number">192</span>, <span class="number">1</span>), (<span class="number">193</span>, <span class="number">1</span>), (<span class="number">194</span>, <span class="number">1</span>), (<span class="number">195</span>, <span class="number">3</span>), (<span class="number">196</span>, <span class="number">1</span>), (<span class="number">197</span>, <span class="number">1</span>), (<span class="number">198</span>, <span class="number">1</span>), (<span class="number">199</span>, <span class="number">1</span>), (<span class="number">200</span>, <span class="number">1</span>), (<span class="number">201</span>, <span class="number">1</span>), (<span class="number">202</span>, <span class="number">1</span>), (<span class="number">203</span>, <span class="number">1</span>), (<span class="number">204</span>, <span class="number">1</span>), (<span class="number">205</span>, <span class="number">1</span>), (<span class="number">206</span>, <span class="number">2</span>), (<span class="number">207</span>, <span class="number">1</span>), (<span class="number">208</span>, <span class="number">2</span>), (<span class="number">209</span>, <span class="number">5</span>), (<span class="number">210</span>, <span class="number">1</span>), (<span class="number">211</span>, <span class="number">1</span>), (<span class="number">212</span>, <span class="number">3</span>), (<span class="number">213</span>, <span class="number">1</span>), (<span class="number">214</span>, <span class="number">1</span>), (<span class="number">215</span>, <span class="number">1</span>), (<span class="number">216</span>, <span class="number">1</span>), (<span class="number">217</span>, <span class="number">3</span>), (<span class="number">218</span>, <span class="number">1</span>), (<span class="number">219</span>, <span class="number">1</span>), (<span class="number">220</span>, <span class="number">1</span>), (<span class="number">221</span>, <span class="number">1</span>), (<span class="number">222</span>, <span class="number">2</span>), (<span class="number">223</span>, <span class="number">2</span>), (<span class="number">224</span>, <span class="number">1</span>), (<span class="number">225</span>, <span class="number">1</span>), (<span class="number">226</span>, <span class="number">1</span>), (<span class="number">227</span>, <span class="number">1</span>), (<span class="number">228</span>, <span class="number">1</span>), (<span class="number">229</span>, <span class="number">1</span>), (<span class="number">230</span>, <span class="number">1</span>), (<span class="number">231</span>, <span class="number">1</span>), (<span class="number">232</span>, <span class="number">1</span>), (<span class="number">233</span>, <span class="number">1</span>), (<span class="number">234</span>, <span class="number">1</span>), (<span class="number">235</span>, <span class="number">1</span>), (<span class="number">236</span>, <span class="number">1</span>), (<span class="number">237</span>, <span class="number">1</span>), (<span class="number">238</span>, <span class="number">1</span>), (<span class="number">239</span>, <span class="number">1</span>), (<span class="number">240</span>, <span class="number">1</span>), (<span class="number">241</span>, <span class="number">1</span>), (<span class="number">242</span>, <span class="number">1</span>), (<span class="number">243</span>, <span class="number">1</span>), (<span class="number">244</span>, <span class="number">1</span>), (<span class="number">245</span>, <span class="number">1</span>), (<span class="number">246</span>, <span class="number">1</span>), (<span class="number">247</span>, <span class="number">1</span>), (<span class="number">248</span>, <span class="number">1</span>), (<span class="number">249</span>, <span class="number">1</span>), (<span class="number">250</span>, <span class="number">1</span>), (<span class="number">251</span>, <span class="number">1</span>), (<span class="number">252</span>, <span class="number">1</span>), (<span class="number">253</span>, <span class="number">1</span>), (<span class="number">254</span>, <span class="number">1</span>), (<span class="number">255</span>, <span class="number">1</span>), (<span class="number">256</span>, <span class="number">3</span>), (<span class="number">257</span>, <span class="number">1</span>), (<span class="number">258</span>, <span class="number">1</span>), (<span class="number">259</span>, <span class="number">1</span>), (<span class="number">260</span>, <span class="number">1</span>), (<span class="number">261</span>, <span class="number">1</span>), (<span class="number">262</span>, <span class="number">1</span>), (<span class="number">263</span>, <span class="number">3</span>), (<span class="number">264</span>, <span class="number">1</span>), (<span class="number">265</span>, <span class="number">1</span>), (<span class="number">266</span>, <span class="number">1</span>), (<span class="number">267</span>, <span class="number">1</span>), (<span class="number">268</span>, <span class="number">1</span>), (<span class="number">269</span>, <span class="number">1</span>), (<span class="number">270</span>, <span class="number">1</span>), (<span class="number">271</span>, <span class="number">1</span>), (<span class="number">272</span>, <span class="number">1</span>), (<span class="number">273</span>, <span class="number">1</span>), (<span class="number">274</span>, <span class="number">1</span>), (<span class="number">275</span>, <span class="number">1</span>), (<span class="number">276</span>, <span class="number">4</span>), (<span class="number">277</span>, <span class="number">4</span>), (<span class="number">278</span>, <span class="number">1</span>), (<span class="number">279</span>, <span class="number">1</span>), (<span class="number">280</span>, <span class="number">2</span>), (<span class="number">281</span>, <span class="number">1</span>), (<span class="number">282</span>, <span class="number">1</span>), (<span class="number">283</span>, <span class="number">1</span>), (<span class="number">284</span>, <span class="number">1</span>), (<span class="number">285</span>, <span class="number">1</span>), (<span class="number">286</span>, <span class="number">1</span>), (<span class="number">287</span>, <span class="number">1</span>), (<span class="number">288</span>, <span class="number">1</span>), (<span class="number">289</span>, <span class="number">1</span>), (<span class="number">290</span>, <span class="number">1</span>), (<span class="number">291</span>, <span class="number">1</span>), (<span class="number">292</span>, <span class="number">1</span>), (<span class="number">293</span>, <span class="number">1</span>), (<span class="number">294</span>, <span class="number">1</span>), (<span class="number">295</span>, <span class="number">1</span>), (<span class="number">296</span>, <span class="number">2</span>), (<span class="number">297</span>, <span class="number">1</span>), (<span class="number">298</span>, <span class="number">1</span>), (<span class="number">299</span>, <span class="number">1</span>), (<span class="number">300</span>, <span class="number">20</span>), (<span class="number">301</span>, <span class="number">1</span>), (<span class="number">302</span>, <span class="number">1</span>), (<span class="number">303</span>, <span class="number">1</span>), (<span class="number">304</span>, <span class="number">5</span>), (<span class="number">305</span>, <span class="number">1</span>), (<span class="number">306</span>, <span class="number">2</span>), (<span class="number">307</span>, <span class="number">1</span>), (<span class="number">308</span>, <span class="number">1</span>), (<span class="number">309</span>, <span class="number">1</span>), (<span class="number">310</span>, <span class="number">1</span>), (<span class="number">311</span>, <span class="number">2</span>), (<span class="number">312</span>, <span class="number">1</span>), (<span class="number">313</span>, <span class="number">1</span>), (<span class="number">314</span>, <span class="number">1</span>), (<span class="number">315</span>, <span class="number">2</span>), (<span class="number">316</span>, <span class="number">1</span>), (<span class="number">317</span>, <span class="number">1</span>)]]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>计算tf-idf（term frequency–inverse document frequency）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>tfidf = models.TfidfModel(corpus)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>corpus_tfidf = tfidf[corpus]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>计算LSI模型，建立相似索引</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>lsi = models.LsiModel(corpus_tfidf, id2word=dictionary, num_topics=<span class="number">100</span>) </span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>lsiSpace = lsi[corpus_tfidf] </span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>index = similarities.MatrixSimilarity(lsiSpace)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>把用户的喜好，转换为语义向量的平均和$factor$。然后找最相似节目</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sims = index[factor]</span><br><span class="line">sorted(enumerate(sims), key=<span class="keyword">lambda</span> item: -item[<span class="number">1</span>])[:N]</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>比如用户喜欢节目a，b，不喜欢节目c。那么</p>
+<p>$$ factor = \frac{lsiSpace[a] + lsiSpace[b] - lsiSpace[c]}{3} $$</p>
+<h2 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h2><p>1) 实时反馈的效果<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">喜欢：银河系漫游指南(1292267)</span><br><span class="line">不喜欢：东京爱情故事(1438760)</span><br><span class="line">推荐： 宇宙的工作 ( 26807600 )</span><br><span class="line"></span><br><span class="line">喜欢：东京爱情故事(1438760)</span><br><span class="line">不喜欢：银河系漫游指南(1292267)</span><br><span class="line">推荐： 年龄歧视 ( 26395044 )</span><br><span class="line"></span><br><span class="line">喜欢：武侠(4942776)</span><br><span class="line">不喜欢: 三傻大佬宝莱坞(3793023)</span><br><span class="line">推荐： 消失爱人 ( 26309968 )</span><br><span class="line"></span><br><span class="line">喜欢：龙门客栈(1459054)</span><br><span class="line">不喜欢：驴得水(25921812)</span><br><span class="line">推荐： 灵幻先生 ( 2127388 )</span><br></pre></td></tr></table></figure></p>
+<p>第一组和第二组结果看着挺不错。题材上看着确实蛮相似的。</p>
+<p>2) 有没有其它的指标？<br>基于离线数据，如何评估lsi的好坏？准确率？覆盖率？RMSE？好像都没有。</p>
+<h2 id="后续"><a href="#后续" class="headerlink" title="后续"></a>后续</h2><p>发现gensim居然已经有一个封装好的服务document similarity service。不用自己一步一步的写细节。</p>
+<blockquote>
+<p>What is a document similarity service?<br>  Conceptually, a service that lets you :</p>
+<ol>
+<li>train a semantic model from a corpus of plain texts (no manual annotation and mark-up needed)</li>
+<li>index arbitrary documents using this semantic model</li>
+<li>query the index for similar documents (the query can be either an id of a document already in the index, or an arbitrary text)</li>
+</ol>
+</blockquote>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/推荐/" rel="tag"># 推荐</a>
+          
+            <a href="/tags/LSI/" rel="tag"># LSI</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/08/21/ALS因子模型/" rel="next" title="ALS求解因子模型">
+                <i class="fa fa-chevron-left"></i> ALS求解因子模型
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/09/06/web页面加上语音识别/" rel="prev" title="web页面加上语音识别">
+                web页面加上语音识别 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/xiongwen_circle_avatar.png" alt="D.H.Jack">
+          <p class="site-author-name" itemprop="name">D.H.Jack</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#LSI"><span class="nav-number">1.</span> <span class="nav-text">LSI</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据"><span class="nav-number">2.</span> <span class="nav-text">数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结合"><span class="nav-number">3.</span> <span class="nav-text">结合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#效果"><span class="nav-number">4.</span> <span class="nav-text">效果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#后续"><span class="nav-number">5.</span> <span class="nav-text">后续</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">D.H.Jack</span>
+
+  
+</div>
+
+
+  <div class="powered-by">
+    由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+  </div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="theme-info">
+    主题 &mdash;
+    <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+      NexT.Mist
+    </a>
+  </div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>

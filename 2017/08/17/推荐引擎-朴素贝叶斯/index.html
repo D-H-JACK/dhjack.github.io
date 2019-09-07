@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="推荐,贝叶斯,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.2">
+
+
+
+
+
+
+<meta name="description" content="贝叶斯一直很喜欢贝叶斯公式。简洁、有效。利用先验概率+实验数据求解后验概率。列公式：$$p\left ( A|B \right )=\frac{p\left ( B|A \right ) \cdot p(A)}{p\left ( B \right )}$$除了知道公式外，为什么是有效的？其实是根据实验结果，得到的统计信息。  贝叶斯理论的核心依赖于巧妙的转变思路：如果你想评估根据证据提出的假说的有">
+<meta name="keywords" content="推荐,贝叶斯">
+<meta property="og:type" content="article">
+<meta property="og:title" content="推荐引擎-朴素贝叶斯">
+<meta property="og:url" content="https://dhjack.github.io/2017/08/17/推荐引擎-朴素贝叶斯/index.html">
+<meta property="og:site_name" content="DHJACK&#39;s Blog">
+<meta property="og:description" content="贝叶斯一直很喜欢贝叶斯公式。简洁、有效。利用先验概率+实验数据求解后验概率。列公式：$$p\left ( A|B \right )=\frac{p\left ( B|A \right ) \cdot p(A)}{p\left ( B \right )}$$除了知道公式外，为什么是有效的？其实是根据实验结果，得到的统计信息。  贝叶斯理论的核心依赖于巧妙的转变思路：如果你想评估根据证据提出的假说的有">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-09-07T09:13:01.703Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="推荐引擎-朴素贝叶斯">
+<meta name="twitter:description" content="贝叶斯一直很喜欢贝叶斯公式。简洁、有效。利用先验概率+实验数据求解后验概率。列公式：$$p\left ( A|B \right )=\frac{p\left ( B|A \right ) \cdot p(A)}{p\left ( B \right )}$$除了知道公式外，为什么是有效的？其实是根据实验结果，得到的统计信息。  贝叶斯理论的核心依赖于巧妙的转变思路：如果你想评估根据证据提出的假说的有">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://dhjack.github.io/2017/08/17/推荐引擎-朴素贝叶斯/">
+
+
+
+
+
+  <title>推荐引擎-朴素贝叶斯 | DHJACK's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">DHJACK's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://dhjack.github.io/2017/08/17/推荐引擎-朴素贝叶斯/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="D.H.Jack">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/xiongwen_circle_avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DHJACK's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">推荐引擎-朴素贝叶斯</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-17T08:39:28+08:00">
+                2017-08-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="贝叶斯"><a href="#贝叶斯" class="headerlink" title="贝叶斯"></a>贝叶斯</h2><p>一直很喜欢贝叶斯公式。简洁、有效。利用先验概率+实验数据求解后验概率。<br>列公式：<br>$$p\left ( A|B \right )=\frac{p\left ( B|A \right ) \cdot p(A)}{p\left ( B \right )}$$<br>除了知道公式外，为什么是有效的？其实是根据实验结果，得到的统计信息。</p>
+<blockquote>
+<p>贝叶斯理论的核心依赖于巧妙的转变思路：如果你想评估根据证据提出的假说的有力程度，你必须先评估证据的有力程度。面对着不确定性，贝叶斯提出了三个问题：<br>对最初树立的信念的真实性我有多大的信心？ —&gt; P(A)<br>如果对最初的信念坚信不疑，对新证据的准确性我有多大的信心？—&gt; P(B|A)<br>如果对最初的信念摇摆不定，对新证据的准确性我有多大的信心？—&gt; P(B)</p>
+</blockquote>
+<h2 id="拥有的数据"><a href="#拥有的数据" class="headerlink" title="拥有的数据"></a>拥有的数据</h2><p>从豆瓣上面爬下来的19186部电影，3408个用户，以及93209条评分。</p>
+<h2 id="结合"><a href="#结合" class="headerlink" title="结合"></a>结合</h2><p>用户看过了节目a，b。喜欢a，不喜欢b。现在要对这位用户推荐一部电影。计算用户对其它节目的喜欢程度和不喜欢程度。然后取最大值。利用下列公式计算用户对电影$c$的喜欢程度:</p>
+<p>$$p\left ( like_c | like_a \cup unlike_b \right ) = \frac{p\left ( like_a \cup unlike_b | like_c \right ) \cdot p\left ( like_c \right )}{p\left ( like_a \cup unlike_b \right )}$$</p>
+<p>假设喜欢节目a和不喜欢节目b没有关系。那么可以简化：<br>$$p\left ( like_a \cup unlike_b | like_c \right ) = p\left ( like_a | like_c \right ) \cdot p\left ( unlike_b | like_c \right )$$</p>
+<p>其中的每一项都可以通过下列式子求解：<br>$$p\left ( like_a | like_c \right ) = \frac{count\left ( userLike_a \cap userLike_c \right )}{count\left ( userLike_c \right )}$$</p>
+<p>$$p\left ( unlike_b | like_c \right ) = \frac{count\left ( userunlike_b \cap userLike_c \right )}{count\left ( userLike_c \right )}$$</p>
+<p>$$p\left ( like_c \right ) = \frac{count\left ( userLike_c \right )}{totaluser}$$</p>
+<p>类似的，计算用户对电影$c$的不喜欢程度：</p>
+<p>$$p\left ( unlike_c | like_a \cup unlike_b \right ) = \frac{p\left ( like_a \cup unlike_b | unlike_c \right ) \cdot p\left ( unlike_c \right )}{p\left ( like_a \cup unlike_b \right )}$$</p>
+<p>$$p\left ( like_a \cup unlike_b | unlike_c \right ) = p\left ( like_a | unlike_c \right ) \cdot p\left ( unlike_b | unlike_c \right )$$</p>
+<p>$$p\left ( like_a | unlike_c \right ) = \frac{count\left ( userLike_a \cap userunlike_c \right )}{count\left ( userunlike_c \right )}$$</p>
+<p>$$p\left ( unlike_b | unlike_c \right ) = \frac{count\left ( userunlike_b \cap userunlike_c \right )}{count\left ( userunlike_c \right )}$$</p>
+<p>$$p\left ( unlike_c \right ) = \frac{count\left ( userunlike_c \right )}{totaluser}$$</p>
+<h2 id="效果"><a href="#效果" class="headerlink" title="效果"></a>效果</h2><p>豆瓣评分是5分制的。对评分大于等于3的，记为喜欢，小于3的，记为不喜欢。随机挑选一组喜欢和不喜欢的节目，获取推荐。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">喜欢：银河系漫游指南(1292267)</span><br><span class="line">不喜欢：东京爱情故事(1438760)</span><br><span class="line">推荐：爱乐之城(25934014)</span><br><span class="line"></span><br><span class="line">喜欢：东京爱情故事(1438760)</span><br><span class="line">不喜欢：银河系漫游指南(1292267)</span><br><span class="line">推荐：霍比特人3：五军之战(2973079)</span><br><span class="line"></span><br><span class="line">喜欢：武侠(4942776)    </span><br><span class="line">不喜欢: 三傻大佬宝莱坞(3793023)</span><br><span class="line">推荐：爱乐之城(25934014)</span><br><span class="line"></span><br><span class="line">喜欢：龙门客栈(1459054)</span><br><span class="line">不喜欢：驴得水(25921812)</span><br><span class="line">推荐：搞笑漫画日和3(3017339)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>为什么都推荐了爱乐之城？<br>  爱乐之城的观看人数和评分都很高。也就是先验概率很大。所以推荐的概率高。需不需要加点惩罚因子？</li>
+<li>为什么感觉效果不好？<br>  一般观察着的角度看。应该是喜欢什么类型，就推荐什么类型，不喜欢什么类型，就不推荐什么类型。但是效果明显不是这样。这个想法其实很奇怪。如果是需要根据节目类型来推荐，那么自然有其他根据类型推荐的算法。既然是基于用户行为的贝叶斯，那么就需要遵循这个结果。不能想当然的以为是好，还是不好。需要一个验证手段。</li>
+</ul>
+<p>上面的喜欢和不喜欢，是随机挑选的。不是实际的用户行为。现在再根据豆瓣用户实际的观看记录来推荐。<br>交叉验证的方法：</p>
+<ul>
+<li>把评分数据随机切分为两份：一份4/5作为训练数据，一份1/5作为测试数据。</li>
+<li>然后用A数据去计算推荐引擎对B数据中每个节目的预测结果，得到准确度。</li>
+</ul>
+<p>重复3次，实验结果：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">次数</th>
+<th style="text-align:right">贝叶斯引擎预测精度</th>
+<th style="text-align:center">随机预测精度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">第一次(16232条记录)</td>
+<td style="text-align:right">0.855409068507</td>
+<td style="text-align:center">0.507207984229</td>
+</tr>
+<tr>
+<td style="text-align:left">第二次(16286条记录)</td>
+<td style="text-align:right">0.854292029964</td>
+<td style="text-align:center">0.498464939212</td>
+</tr>
+<tr>
+<td style="text-align:left">第三次(16210条记录)</td>
+<td style="text-align:right">0.859469463294</td>
+<td style="text-align:center">0.495249845774</td>
+</tr>
+</tbody>
+</table>
+<h2 id="后续"><a href="#后续" class="headerlink" title="后续"></a>后续</h2><ol>
+<li>加上贝叶斯网络？</li>
+<li>评分对每个用户的感觉都是不一样的。一个用户打3分，可能是喜欢，另外一个用户打3分，可能是不喜欢。所以这里需要归一化下。</li>
+<li>验证的方式：预测对节目c的喜欢和用户实际的喜欢。</li>
+<li>还有更大的一个问题：不喜欢，难道就代表不可以推荐么？不喜欢，还看？还去评论？不喜欢，是不是也代表一种兴趣？</li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/推荐/" rel="tag"># 推荐</a>
+          
+            <a href="/tags/贝叶斯/" rel="tag"># 贝叶斯</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/08/15/抓取豆瓣数据的爬虫/" rel="next" title="抓取豆瓣数据的爬虫">
+                <i class="fa fa-chevron-left"></i> 抓取豆瓣数据的爬虫
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/08/21/ALS因子模型/" rel="prev" title="ALS求解因子模型">
+                ALS求解因子模型 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/xiongwen_circle_avatar.png" alt="D.H.Jack">
+          <p class="site-author-name" itemprop="name">D.H.Jack</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#贝叶斯"><span class="nav-number">1.</span> <span class="nav-text">贝叶斯</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#拥有的数据"><span class="nav-number">2.</span> <span class="nav-text">拥有的数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结合"><span class="nav-number">3.</span> <span class="nav-text">结合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#效果"><span class="nav-number">4.</span> <span class="nav-text">效果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#后续"><span class="nav-number">5.</span> <span class="nav-text">后续</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">D.H.Jack</span>
+
+  
+</div>
+
+
+  <div class="powered-by">
+    由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+  </div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="theme-info">
+    主题 &mdash;
+    <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+      NexT.Mist
+    </a>
+  </div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
