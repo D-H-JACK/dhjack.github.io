@@ -96,7 +96,7 @@
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="DHJACK&#39;s Blog">
-<meta property="og:url" content="https://dhjack.github.io/tags/spark/index.html">
+<meta property="og:url" content="https://dhjack.github.io/page/2/index.html">
 <meta property="og:site_name" content="DHJACK&#39;s Blog">
 <meta property="og:locale" content="zh-Hans">
 <meta name="twitter:card" content="summary">
@@ -129,13 +129,13 @@
 
 
 
-  <link rel="canonical" href="https://dhjack.github.io/tags/spark/">
+  <link rel="canonical" href="https://dhjack.github.io/page/2/">
 
 
 
 
 
-  <title>标签: spark | DHJACK's Blog</title>
+  <title>DHJACK's Blog</title>
   
 
 
@@ -154,7 +154,9 @@
     
   
 
-  <div class="container sidebar-position-left  ">
+  <div class="container sidebar-position-left 
+   page-home 
+ ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -237,53 +239,147 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-
-  
-  
-  
-  <div class="post-block tag">
-
-    <div id="posts" class="posts-collapse">
-      <div class="collection-title">
-        <h1>spark<small>标签</small>
-        </h1>
-      </div>
-
+  <section id="posts" class="posts-expand">
+    
       
-        
+
+  
+
+  
+  
+  
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://dhjack.github.io/2017/08/15/抓取豆瓣数据的爬虫/">
 
-      <h2 class="post-title">
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="D.H.Jack">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="http://oe1zttqsu.bkt.clouddn.com/xiongwen_circle_avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DHJACK's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
         
-            <a class="post-title-link" href="/2017/10/01/认识hadoop/" itemprop="url">
-              
-                <span itemprop="name">认识hadoop</span>
-              
-            </a>
         
-      </h2>
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/08/15/抓取豆瓣数据的爬虫/" itemprop="url">抓取豆瓣数据的爬虫</a></h1>
+        
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2017-10-01T21:01:10+08:00" content="2017-10-01">
-          10-01
-        </time>
-      </div>
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-15T10:58:18+08:00">
+                2017-08-15
+              </time>
+            
 
-    </header>
-  </article>
+            
 
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-    </div>
+      
 
+      
+        
+          
+          主要实现了三个类：JDriver，JProxy，JWorker。
+JProxyJProxy封装了一个类，负责请求url，并返回数据。内部会使用代理请求数据。目的当然是为了防止被反爬。
+主要流程如下：
+
+获取代理：
+如果本地有可用代理，随机返回一个出去。
+如果本地没有可用代理，向花刺请求并解析出一组新
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/08/15/抓取豆瓣数据的爬虫/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
   </div>
   
   
   
+  </article>
+
+
+    
+  </section>
 
   
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+  </nav>
+
 
 
           </div>
