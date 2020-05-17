@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css">
 
 
-  <meta name="keywords" content="共享内存,golang,">
+  <meta name="keywords" content="Hexo, NexT">
 
 
 
@@ -94,18 +94,17 @@
 
 
 
-<meta name="description" content="什么是共享内存共享内存是一个神奇的东西。允许多个进程对同一内存操作，就像线程间对同一内存的修改一样直接。是最快的进程间通信方式。使用过程中，发现的一些共享内存的特性。  申请大小为Size的共享内存，成功后，进程的虚拟内存会立刻加Size。但是实际占用的共享内存，不会立刻变大，要随着使用逐渐的增长。 创建成功后的共享内存，Size可以被其他进程修改。可以修改为更小的Size，但是不可以修改的更大。">
-<meta name="keywords" content="共享内存,golang">
+<meta name="description" content="上周领导总结了下Q1季度的绩效。其实对于绩效，一直很不理解。如何量化，如何公平？有些人看似做了很多需求，但是其实都很简单。有些人虽然只做了一点点东西，其实很有价值，也很有难度。有些人看似经常加班，其实工作很拖拉，效率和积极性都不高。有些人下班就走人，能说明他工作不上心么？工作的饱和度如何定义？工作中输出的价值又如何衡量？换个角度，即便一个简单的事情，优秀的人也可以做出很漂亮的结果。反之，即便很有价">
 <meta property="og:type" content="article">
-<meta property="og:title" content="共享内存在golang中使用">
-<meta property="og:url" content="https://dhjack.github.io/2017/10/22/共享内存在golang中使用/index.html">
+<meta property="og:title" content="绩效">
+<meta property="og:url" content="https://dhjack.github.io/2020/05/17/绩效/index.html">
 <meta property="og:site_name" content="DHJACK&#39;s Blog">
-<meta property="og:description" content="什么是共享内存共享内存是一个神奇的东西。允许多个进程对同一内存操作，就像线程间对同一内存的修改一样直接。是最快的进程间通信方式。使用过程中，发现的一些共享内存的特性。  申请大小为Size的共享内存，成功后，进程的虚拟内存会立刻加Size。但是实际占用的共享内存，不会立刻变大，要随着使用逐渐的增长。 创建成功后的共享内存，Size可以被其他进程修改。可以修改为更小的Size，但是不可以修改的更大。">
+<meta property="og:description" content="上周领导总结了下Q1季度的绩效。其实对于绩效，一直很不理解。如何量化，如何公平？有些人看似做了很多需求，但是其实都很简单。有些人虽然只做了一点点东西，其实很有价值，也很有难度。有些人看似经常加班，其实工作很拖拉，效率和积极性都不高。有些人下班就走人，能说明他工作不上心么？工作的饱和度如何定义？工作中输出的价值又如何衡量？换个角度，即便一个简单的事情，优秀的人也可以做出很漂亮的结果。反之，即便很有价">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-09-07T09:13:01.701Z">
+<meta property="og:updated_time" content="2020-05-17T08:27:03.861Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="共享内存在golang中使用">
-<meta name="twitter:description" content="什么是共享内存共享内存是一个神奇的东西。允许多个进程对同一内存操作，就像线程间对同一内存的修改一样直接。是最快的进程间通信方式。使用过程中，发现的一些共享内存的特性。  申请大小为Size的共享内存，成功后，进程的虚拟内存会立刻加Size。但是实际占用的共享内存，不会立刻变大，要随着使用逐渐的增长。 创建成功后的共享内存，Size可以被其他进程修改。可以修改为更小的Size，但是不可以修改的更大。">
+<meta name="twitter:title" content="绩效">
+<meta name="twitter:description" content="上周领导总结了下Q1季度的绩效。其实对于绩效，一直很不理解。如何量化，如何公平？有些人看似做了很多需求，但是其实都很简单。有些人虽然只做了一点点东西，其实很有价值，也很有难度。有些人看似经常加班，其实工作很拖拉，效率和积极性都不高。有些人下班就走人，能说明他工作不上心么？工作的饱和度如何定义？工作中输出的价值又如何衡量？换个角度，即便一个简单的事情，优秀的人也可以做出很漂亮的结果。反之，即便很有价">
 
 
 
@@ -134,13 +133,13 @@
 
 
 
-  <link rel="canonical" href="https://dhjack.github.io/2017/10/22/共享内存在golang中使用/">
+  <link rel="canonical" href="https://dhjack.github.io/2020/05/17/绩效/">
 
 
 
 
 
-  <title>共享内存在golang中使用 | DHJACK's Blog</title>
+  <title>绩效 | DHJACK's Blog</title>
   
 
 
@@ -257,7 +256,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://dhjack.github.io/2017/10/22/共享内存在golang中使用/">
+    <link itemprop="mainEntityOfPage" href="https://dhjack.github.io/2020/05/17/绩效/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="D.H.Jack">
@@ -274,7 +273,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">共享内存在golang中使用</h1>
+          <h1 class="post-title" itemprop="name headline">绩效</h1>
         
 
         <div class="post-meta">
@@ -286,8 +285,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-22T11:06:43+08:00">
-                2017-10-22
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-05-17T15:57:36+08:00">
+                2020-05-17
               </time>
             
 
@@ -324,39 +323,7 @@
       
 
       
-        <h1 id="什么是共享内存"><a href="#什么是共享内存" class="headerlink" title="什么是共享内存"></a>什么是共享内存</h1><p>共享内存是一个神奇的东西。允许多个进程对同一内存操作，就像线程间对同一内存的修改一样直接。是最快的进程间通信方式。<br>使用过程中，发现的一些共享内存的特性。</p>
-<ol>
-<li>申请大小为Size的共享内存，成功后，进程的虚拟内存会立刻加Size。但是实际占用的共享内存，不会立刻变大，要随着使用逐渐的增长。</li>
-<li>创建成功后的共享内存，Size可以被其他进程修改。可以修改为更小的Size，但是不可以修改的更大。这个如果不注意，就会导致问题。比如进程B修改了共享内存的大小，那么进程A如果不知道，就有危险。</li>
-<li>用ipcrm删除共享内存。如果此时还有进程绑定这个共享内存，那么该共享内存的key会变成0，而不是直接删除。应该是系统托管了。</li>
-</ol>
-<h1 id="golang中如何使用"><a href="#golang中如何使用" class="headerlink" title="golang中如何使用"></a>golang中如何使用</h1><p>创建共享内存的方式有两种：</p>
-<ol>
-<li>System V API</li>
-<li>POSIX API</li>
-</ol>
-<p>两者有一些区别</p>
-<ol>
-<li>System V API创建的共享内存，如果不删除，即便程序退出，也会存在。正是这个特性，可以实现程序的快速重启：需要加载的数据放入共享内存，重启后，不用重新加载数据</li>
-<li>System V API创建的共享内存，可以用ipcs，ipcrm等命令监控</li>
-<li>POSIX API可以把内存映射到磁盘文件</li>
-</ol>
-<p>而在Golang中调用共享内存，有三种方式：</p>
-<ol>
-<li>cgo调用System V API</li>
-<li>cgo调用POSIX API</li>
-<li>syscall.Syscall系统调用<ul>
-<li>不是每个平台都支持，可能发生<code>undefined: syscall.SYS_SHMGET</code></li>
-</ul>
-</li>
-</ol>
-<h1 id="封装的一个库"><a href="#封装的一个库" class="headerlink" title="封装的一个库"></a>封装的一个库</h1><p>封装了相关的操作，提供3个接口</p>
-<ol>
-<li>按照指定大小，获取共享内存</li>
-<li>判断共享内存里面的数据是否可用</li>
-<li>设置共享内存里面的数据为可用</li>
-</ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go get github.com/dhjack/Golang/sharemem</span><br></pre></td></tr></table></figure>
+        <p>上周领导总结了下Q1季度的绩效。其实对于绩效，一直很不理解。如何量化，如何公平？有些人看似做了很多需求，但是其实都很简单。有些人虽然只做了一点点东西，其实很有价值，也很有难度。有些人看似经常加班，其实工作很拖拉，效率和积极性都不高。有些人下班就走人，能说明他工作不上心么？工作的饱和度如何定义？工作中输出的价值又如何衡量？换个角度，即便一个简单的事情，优秀的人也可以做出很漂亮的结果。反之，即便很有价值的事情，一般的人也可能做出很一般的结果。<br>处于我现在的位置上，有哪些是我能管理的，有哪些是我能改变的？其实，从《行为设计学》知道，改变不完全是和权力挂钩的。不是权力越大，越能做出有价值的改变。首先在于是否有这个心去做，其次在于是否找到适合的方式。所以不要抱怨自己的位置尴尬等等。应该更积极的去做想做的事情。<br>然后谈到了更大的问题：规划。如何对面前的团队做规划？甚至往大的说，如何对自己的人生做规划？其实仔细想想，如何要给出十年的规划，貌似一下子给不出来。但是如何要给出1个月的规划，还是很明确的。那么可以先做一个月的规划，然后不断的往更长的时间范围去演化。</p>
 
       
     </div>
@@ -372,14 +339,6 @@
 
     <footer class="post-footer">
       
-        <div class="post-tags">
-          
-            <a href="/tags/共享内存/" rel="tag"># 共享内存</a>
-          
-            <a href="/tags/golang/" rel="tag"># golang</a>
-          
-        </div>
-      
 
       
       
@@ -389,8 +348,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/10/01/认识hadoop/" rel="next" title="认识hadoop">
-                <i class="fa fa-chevron-left"></i> 认识hadoop
+              <a href="/2020/05/10/如何编程/" rel="next" title="如何编程">
+                <i class="fa fa-chevron-left"></i> 如何编程
               </a>
             
           </div>
@@ -398,10 +357,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/09/07/浅谈RPC/" rel="prev" title="浅谈RPC">
-                浅谈RPC <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -453,17 +408,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview sidebar-panel">
+      <section class="site-overview sidebar-panel sidebar-panel-active">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image" src="http://oe1zttqsu.bkt.clouddn.com/xiongwen_circle_avatar.png" alt="D.H.Jack">
           <p class="site-author-name" itemprop="name">D.H.Jack</p>
@@ -514,22 +460,6 @@
 
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是共享内存"><span class="nav-number">1.</span> <span class="nav-text">什么是共享内存</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#golang中如何使用"><span class="nav-number">2.</span> <span class="nav-text">golang中如何使用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#封装的一个库"><span class="nav-number">3.</span> <span class="nav-text">封装的一个库</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       
