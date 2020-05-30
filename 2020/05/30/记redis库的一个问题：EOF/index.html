@@ -101,10 +101,12 @@
 <meta property="og:site_name" content="DHJACK&#39;s Blog">
 <meta property="og:description" content="现象：执行redis命令，遇到io.EOF错误后，程序无法恢复。先直接说结果：程序里面有一个很奇怪的逻辑，操作redis失败后，会重连。但是重连成功后，需要sleep 30s才能继续去操作redis。而redis server有配置timeout 20s。所以程序休眠30s后，连接已经被redis server断开了，这时操作redis，当然是EOF。这样就陷入重连 -&amp;gt; 休眠30s -&amp;g">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-05-30T02:44:57.250Z">
+<meta property="og:image" content="https://dhjack.github.io/images/redis_eof.png">
+<meta property="og:updated_time" content="2020-05-30T04:09:09.712Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="记go-redis库的一个问题：EOF">
 <meta name="twitter:description" content="现象：执行redis命令，遇到io.EOF错误后，程序无法恢复。先直接说结果：程序里面有一个很奇怪的逻辑，操作redis失败后，会重连。但是重连成功后，需要sleep 30s才能继续去操作redis。而redis server有配置timeout 20s。所以程序休眠30s后，连接已经被redis server断开了，这时操作redis，当然是EOF。这样就陷入重连 -&amp;gt; 休眠30s -&amp;g">
+<meta name="twitter:image" content="https://dhjack.github.io/images/redis_eof.png">
 
 
 
@@ -323,7 +325,7 @@
       
 
       
-        <p>现象：执行redis命令，遇到io.EOF错误后，程序无法恢复。<br>先直接说结果：程序里面有一个很奇怪的逻辑，操作redis失败后，会重连。但是重连成功后，需要sleep 30s才能继续去操作redis。<br>而redis server有配置timeout 20s。所以程序休眠30s后，连接已经被redis server断开了，这时操作redis，当然是EOF。这样就陷入<br>重连 -&gt; 休眠30s -&gt; 被服务器Close -&gt; 执行命令得到EOF错误 -&gt; 继续重连的死循环中，无法恢复正常。</p>
+        <p>现象：执行redis命令，遇到io.EOF错误后，程序无法恢复。<br>先直接说结果：程序里面有一个很奇怪的逻辑，操作redis失败后，会重连。但是重连成功后，需要sleep 30s才能继续去操作redis。而redis server有配置timeout 20s。所以程序休眠30s后，连接已经被redis server断开了，这时操作redis，当然是EOF。这样就陷入重连 -&gt; 休眠30s -&gt; 被服务器Close -&gt; 执行命令得到EOF错误 -&gt; 继续重连的死循环中，无法恢复正常。</p>
 <p>一直没发现程序休眠30s是一个问题，是因为自己漏掉了几个重要的概念：</p>
 <ol>
 <li>redis server有timeout的配置，时间到了，会主动断开空闲的连接</li>
@@ -333,8 +335,16 @@
 <p>后来在测试中发现：</p>
 <ol>
 <li>Options.MaxRetries配置为1，go-redis会重连并重试成功，返回正常结果</li>
-<li>Options.IdleTimeout配置小于redis server timeout的值，go-redis也会重连并重试成功。<br>这点就比较奇怪，还没弄明白为什么</li>
+<li>Options.IdleTimeout配置小于redis server timeout的值，go-redis也会重连并重试成功。这点就比较奇怪，可能是检查到空闲数小于预期，就先重新建立连接了。</li>
+<li>Options.IdleCheckFrequency配合Options.IdleTimeout更有意思了。</li>
 </ol>
+<ul>
+<li>go-redis主动判断到空闲超时，会主动断开连接。然后新建连接，这样请求就没有问题了</li>
+<li>如果IdleTimeout设置的比较长，就不会认为是无效连接，直接使用，当然就返回了EOF</li>
+<li>Options.IdleCheckFrequency 和 Options.IdleTimeout 配置的比较小，然后MinIdleConns配置的是1，那么会不断的主动断开连接，因为空闲时间到了，然后又会不断创建连接，因为有一个最小空闲连接数是1。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">client := redis.NewClient(&amp;redis.Options&#123;Addr: addr, MinIdleConns: 1, IdleTimeout: time.Duration(2) * time.Second, IdleCheckFrequency: time.Duration(1) * time.Second&#125;)</span><br></pre></td></tr></table></figure>
+<p><img src="/images/redis_eof.png" alt="redis-connect-loop"></p>
 
       
     </div>
