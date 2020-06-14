@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico?v=5.1.2">
+
+
+
+
+
+
+<meta name="description" content="背景：明确内部使用的golang版本比较低，准备升级到新的版本。那么如何选择一个新的版本呢？是最新的？还是最新的低一个版本？或者其他？理所当然的的感觉是比最新第一个版本。但是为什么了？现在准备翻译下golang的发布历史，看看每个版本到底做了什么  Go 1.14 的介绍自1.13发布后，历经6个月，1.14发布了。该版本的大部分变动是工具链、运行时和库。当然也保证了对旧版本的兼容信。我们期望所">
+<meta property="og:type" content="article">
+<meta property="og:title" content="(翻译) golang版本历史">
+<meta property="og:url" content="https://dhjack.github.io/2020/06/14/翻译-golang版本历史/index.html">
+<meta property="og:site_name" content="DHJACK&#39;s Blog">
+<meta property="og:description" content="背景：明确内部使用的golang版本比较低，准备升级到新的版本。那么如何选择一个新的版本呢？是最新的？还是最新的低一个版本？或者其他？理所当然的的感觉是比最新第一个版本。但是为什么了？现在准备翻译下golang的发布历史，看看每个版本到底做了什么  Go 1.14 的介绍自1.13发布后，历经6个月，1.14发布了。该版本的大部分变动是工具链、运行时和库。当然也保证了对旧版本的兼容信。我们期望所">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-06-14T07:05:13.220Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="(翻译) golang版本历史">
+<meta name="twitter:description" content="背景：明确内部使用的golang版本比较低，准备升级到新的版本。那么如何选择一个新的版本呢？是最新的？还是最新的低一个版本？或者其他？理所当然的的感觉是比最新第一个版本。但是为什么了？现在准备翻译下golang的发布历史，看看每个版本到底做了什么  Go 1.14 的介绍自1.13发布后，历经6个月，1.14发布了。该版本的大部分变动是工具链、运行时和库。当然也保证了对旧版本的兼容信。我们期望所">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://dhjack.github.io/2020/06/14/翻译-golang版本历史/">
+
+
+
+
+
+  <title>(翻译) golang版本历史 | DHJACK's Blog</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">DHJACK's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://dhjack.github.io/2020/06/14/翻译-golang版本历史/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="D.H.Jack">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="http://oe1zttqsu.bkt.clouddn.com/xiongwen_circle_avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="DHJACK's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">(翻译) golang版本历史</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-06-14T09:35:32+08:00">
+                2020-06-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>背景：明确内部使用的golang版本比较低，准备升级到新的版本。那么如何选择一个新的版本呢？是最新的？还是最新的低一个版本？或者其他？理所当然的的感觉是比最新第一个版本。但是为什么了？现在准备翻译下golang的发布历史，看看每个版本到底做了什么</p>
+</blockquote>
+<h1 id="Go-1-14-的介绍"><a href="#Go-1-14-的介绍" class="headerlink" title="Go 1.14 的介绍"></a>Go 1.14 的介绍</h1><p>自1.13发布后，历经6个月，1.14发布了。该版本的大部分变动是工具链、运行时和库。当然也保证了对旧版本的兼容信。我们期望所有的go程序能继续编译和运行。</p>
+<p>go命令的模块功能已经可以在生产环境使用了，我们鼓励所有的用户迁移到go模块依赖管理。如果你遇到问题，不能迁移，请保证对应有一个开发issue（如果不再1.15的里程碑里，请让我们知道为什么阻止你迁移，我们会适当有限考虑这个问题）</p>
+<h1 id="语言的改动"><a href="#语言的改动" class="headerlink" title="语言的改动"></a>语言的改动</h1><p>对重叠接口的建议，1.14现在允许在重叠模式下内嵌接口。内嵌的接口的方法和嵌入的接口有相同的名字和相同的标识符。这个解决了钻石形嵌入的问题。显示声明的方法还是和原来一样是唯一的</p>
+<h1 id="工具"><a href="#工具" class="headerlink" title="工具"></a>工具</h1><h2 id="Go-命令"><a href="#Go-命令" class="headerlink" title="Go 命令"></a>Go 命令</h2><h3 id="Vendoring"><a href="#Vendoring" class="headerlink" title="Vendoring"></a>Vendoring</h3><p>如果go.mod文件指定1.14或者更高的版本，go命令缺省的设置<code>-mod=vendor</code>. 新的值 <code>-mod=mod</code> 会让go命令从cache中加载模块。</p>
+<p>在<code>-mod=vendor</code>情况下，go命令会校验<code>vendor/modules.txt</code>和<code>go.mod</code>的一致性。</p>
+<p><code>go list -m</code> 不再静默省略不再<code>vendor</code>目录下的依赖。如果设置了<code>-mod=vendor</code>，但是信息不在<code>vendor/modules.txt</code>里面，会显示的报错，</p>
+<h3 id="Flags"><a href="#Flags" class="headerlink" title="Flags"></a>Flags</h3><p><code>go get</code> 不再接受<code>-mod</code>命令。以来，这个flag的设置会被忽略或者导致编译失败。</p>
+<p>当<code>go.mod</code>是只读的，并且vendor目录没有时，<code>-mod=readonly</code> 是缺省设置。</p>
+<p><code>-modcacherw</code> 是新的选项。允许go命令保留模块的默认权限。这样可以添加不存在的文件，以便测试。然而，这样也允许了直接通过<code>rm -rf</code>删除模块缓存</p>
+<p><code>-modfile=file</code> 是新的文件指导go命令读取可选的go.mod，而不是模块根目录下的文件。但是<code>go.mod</code>文件必须还是要存在在模块根目录，虽然不会使用。当指定了<code>-modfile</code>，<code>go.sum</code>也会使用对应目录下的文件。</p>
+<h3 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h3><p><code>GOINSECURE</code> 是新的环境变量，允许go命令拉取模块时，不校验证书。是逗号分隔的模式列表</p>
+<h3 id="模块外的命令"><a href="#模块外的命令" class="headerlink" title="模块外的命令"></a>模块外的命令</h3><p>当设置了<code>module-aware</code>模式，很多模块命令的功能会受限。例如，<code>go build</code>，<code>go run</code>和其他构建命令只能编译标准库和命令行指定的go文件</p>
+<p>以前<code>go</code>命令会解决每个包到最新的版本，但是不会记录路径和或者版本号。这样会导致编译缓慢不可再生的编译问题。</p>
+<p><code>go get</code>还是像以前一样工作，所以给<code>go mod download</code> 和 <code>go list -m</code> 一个显示的版本。</p>
+<h3 id="incompatible-版本"><a href="#incompatible-版本" class="headerlink" title="+incompatible 版本"></a>+incompatible 版本</h3><p>如果一个模块最新的版本包含一个<code>go.mod</code>文件，<code>go get</code>不会更新到一个不兼容的主版本，除非显式要求。当拉取模块时，<code>go list</code>也会忽略不兼容的主版本，除非是通过代理报告的。</p>
+<h3 id="go-mod-文件的维护"><a href="#go-mod-文件的维护" class="headerlink" title="go.mod 文件的维护"></a><code>go.mod</code> 文件的维护</h3><p>如果一个间接依赖的版本已经被隐式被其他主模块依赖，那么除了<code>go mod tidy</code> 外，其他的<code>go</code>命令不再会删除<code>require</code>目录</p>
+<p>如果只是改变装饰，除了<code>go mo tidy</code>,其他的<code>go</code>命令不会修改<code>go.mod</code>文件。</p>
+<p>当<code>-mod=readonly</code>被指定，那么<code>go</code>命令不会因为缺少<code>go</code>指令或者一个错误注释而失败</p>
+<h3 id="模块下载"><a href="#模块下载" class="headerlink" title="模块下载"></a>模块下载</h3><p><code>go</code>命令支持子版本仓库。</p>
+<p><code>go</code>命令支持模块代理和其他http访问的明文错误信息。一个错误仅仅在满足是有效utf8编码和只包含图形化字符和空格是才会显示</p>
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><p><code>go test -v</code>现在会立刻打印 <code>t.Log</code>,而不是等到测试结束。</p>
+<h1 id="运行时"><a href="#运行时" class="headerlink" title="运行时"></a>运行时</h1><p>提升了<code>defer</code> 的大部分使用场景下的性能。直接使用延迟函数几乎是零开销。现在可以在性能核心代码中使用defer而不用关心性能影响。</p>
+<p>协程现在是异步调度。所以没有函数调用的循环不会导致潜在的调度器死锁或者导致明显的垃圾回收延迟。除了一下平台都支持：<code>wondows/arm</code>,<code>darwin/arm</code>,<code>js/wasm,</code>和<code>plan9/*</code></p>
+<p>在Unix系统，包括Linux和macOs，抢占的后果是，用1.14编译的程序会收到更多的信号。意味着使用了<code>syscall</code>和<code>golang.org/x/sys/unix</code>的程序会看到更多的<code>EINTR</code>错误。这些程序不得不处理这些错误。比如重试。可以参考<code>man 7 signal</code>或者相似的文档查看更多信息。</p>
+<p>页分配器会更高效，在高<code>GOMAXPROCS</code>下显著的减少锁竞争。在并行申请大内存，会有更低的延迟、更高吞吐量。</p>
+<p><code>time.After</code>,<code>time.Tick</code>,<code>net.Conn</code>,<code>SetDeadline</code> 使用的内部的时间和friends，更高效，更低的锁竞争，更少的上下文切换。这是用户透明的性能提升。</p>
+<h1 id="编译器"><a href="#编译器" class="headerlink" title="编译器"></a>编译器</h1><p>添加<code>-d=checkptr</code>编译时选项，添加指引检查代码是否符合<code>unsafe.Pointer</code>安全规则。在<code>-race</code>和<code>-mscan</code>选项下是默认配置，可以通过<code>-gcflags=al=-d=checkptr=0</code>关闭。<code>-d=checkptr</code>具体检查如下：</p>
+<ol>
+<li>当通过<code>unsafe.Pointer</code>转换到<code>*T</code>的时候，结果必须适当的分配给T。</li>
+<li>如果算数指针结果指向一个栈对象，那么<code>unsafe.Pointer</code>类型的操作数之一必须指向同一个元素。</li>
+</ol>
+<p><code>-d=checkptr</code>不推荐在windows使用，会导致标准库报告失败。</p>
+<p>通过<code>-json</code>选项，编译器能报告键优化后的机器能识别的log，包括行，逃逸分析，边检检查，空检查。</p>
+<p>重新支持了详细的逃逸分析诊断。以前的版本废弃了。</p>
+<p>macOs下所有go的符号带上了下划线，满足平台约定。</p>
+<p>对于fuzzing，这个版本包括了实验性的支持编译插入覆盖仪表。详细信息参考<code>issue 14565</code>.这个api在未来的版本可能变化。</p>
+<p>边界检查消除现在使用分片的创建的信息，可以消除检查小于int的类型索引。</p>
+<h1 id="核心库"><a href="#核心库" class="headerlink" title="核心库"></a>核心库</h1><h2 id="新byte序列hash包"><a href="#新byte序列hash包" class="headerlink" title="新byte序列hash包"></a>新byte序列hash包</h2><p>1.14引入了一个新的包<code>hash/maphash</code>，提供了bytes序列的hash函数。这些函数的目的是被用在hash tables或者其他需要将字符串或者byte序列映射到无符号的64位整型的均匀分布的数据结构中。</p>
+<p>这些函数是耐撞的，但是不是密码安全的。</p>
+<p>哈希值在一个程序里面是一致的，但是不同进程是不同的。</p>
+<h2 id="库的主要变化"><a href="#库的主要变化" class="headerlink" title="库的主要变化"></a>库的主要变化</h2><p>一如既往，这些变化是兼容旧版本的。</p>
+<h3 id="crypto-tls"><a href="#crypto-tls" class="headerlink" title="crypto/tls"></a>crypto/tls</h3><h3 id="crypto-x509"><a href="#crypto-x509" class="headerlink" title="crypto/x509"></a>crypto/x509</h3><h3 id="debug-dwarf"><a href="#debug-dwarf" class="headerlink" title="debug/dwarf"></a>debug/dwarf</h3><h3 id="encoding-asn1"><a href="#encoding-asn1" class="headerlink" title="encoding/asn1"></a>encoding/asn1</h3><h3 id="encoding-json"><a href="#encoding-json" class="headerlink" title="encoding/json"></a>encoding/json</h3><p><code>Decoder</code>支持新方法<code>InputOffset</code>返回当前解码的偏移量。</p>
+<p><code>Compact</code>不再转移 <code>U+2028</code>和<code>U+2029</code>字符。这些不是文档功能。要正确的转移，查看<code>HTMLEscape</code></p>
+<p><code>Number</code>不再接受无效的数字，这样更接近文档化的行为。如果程序需要接受无效数字，比如空字符串，考虑封装<code>Unmarshaleer</code></p>
+<h3 id="go-build"><a href="#go-build" class="headerlink" title="go/build"></a>go/build</h3><h3 id="go-doc"><a href="#go-doc" class="headerlink" title="go/doc"></a>go/doc</h3><h3 id="io-ioutil"><a href="#io-ioutil" class="headerlink" title="io/ioutil"></a>io/ioutil</h3><h3 id="log"><a href="#log" class="headerlink" title="log"></a>log</h3><h3 id="math"><a href="#math" class="headerlink" title="math"></a>math</h3><h3 id="math-big"><a href="#math-big" class="headerlink" title="math/big"></a>math/big</h3><h3 id="math-bits"><a href="#math-bits" class="headerlink" title="math/bits"></a>math/bits</h3><h3 id="mime"><a href="#mime" class="headerlink" title="mime"></a>mime</h3><h3 id="mime-multipart"><a href="#mime-multipart" class="headerlink" title="mime/multipart"></a>mime/multipart</h3><h3 id="net-http"><a href="#net-http" class="headerlink" title="net/http"></a>net/http</h3><p>新的<code>Header</code>和<code>Values</code>可以获取到所有规范键的值。</p>
+<p>新的<code>Transport</code>成员<code>DialTLSContext</code>能用来指定一个可选的函数为非代理的HTTPS请求建立TLS连接。这个新的成员代替<code>DialTLS</code>。<code>DialTLS</code>将继续工作，但是新的代码应该考虑使用<code>DialTLSContext</code>，允许不再使用时，立刻关闭连接。</p>
+<p>在windows平台，<code>ServeFile</code>可以支持大于2GB的文件</p>
+<h3 id="net-http-httptest"><a href="#net-http-httptest" class="headerlink" title="net/http/httptest"></a>net/http/httptest</h3><h3 id="net-textproto"><a href="#net-textproto" class="headerlink" title="net/textproto"></a>net/textproto</h3><h3 id="net-Unmarshaleer"><a href="#net-Unmarshaleer" class="headerlink" title="net/Unmarshaleer"></a>net/Unmarshaleer</h3><p>当分析URL失败，’Error’会报告无法解析的URL.这样提供了清理结构，和其他分析错误保持一致。</p>
+<h3 id="os-signal"><a href="#os-signal" class="headerlink" title="os/signal"></a>os/signal</h3><h3 id="plugin"><a href="#plugin" class="headerlink" title="plugin"></a>plugin</h3><h3 id="reflect"><a href="#reflect" class="headerlink" title="reflect"></a>reflect</h3><p><code>StructOf</code>支持通过设置<code>PkgPath</code>字段创建未导出字段。</p>
+<h3 id="runtime"><a href="#runtime" class="headerlink" title="runtime"></a>runtime</h3><p><code>runtime.Goexit</code>不再被 <code>panic/recover</code> 中断。</p>
+<h3 id="runtime-pprof"><a href="#runtime-pprof" class="headerlink" title="runtime/pprof"></a>runtime/pprof</h3><h3 id="strconv"><a href="#strconv" class="headerlink" title="strconv"></a>strconv</h3><h3 id="sync"><a href="#sync" class="headerlink" title="sync"></a>sync</h3><p>释放一把高竞争的锁，会直接将CPU调度到写一个等待锁的协程。这个提升了多核CPU机器下，高竞争态锁的性能。</p>
+<h3 id="testing"><a href="#testing" class="headerlink" title="testing"></a>testing</h3><h3 id="text-template"><a href="#text-template" class="headerlink" title="text/template"></a>text/template</h3><h3 id="unicode"><a href="#unicode" class="headerlink" title="unicode"></a>unicode</h3><p><code>unicode</code>更新到了<code>Unicode 12.0</code>。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/06/06/论封闭式开发/" rel="next" title="论封闭式开发">
+                <i class="fa fa-chevron-left"></i> 论封闭式开发
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="http://oe1zttqsu.bkt.clouddn.com/xiongwen_circle_avatar.png" alt="D.H.Jack">
+          <p class="site-author-name" itemprop="name">D.H.Jack</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">13</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Go-1-14-的介绍"><span class="nav-number">1.</span> <span class="nav-text">Go 1.14 的介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#语言的改动"><span class="nav-number">2.</span> <span class="nav-text">语言的改动</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#工具"><span class="nav-number">3.</span> <span class="nav-text">工具</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Go-命令"><span class="nav-number">3.1.</span> <span class="nav-text">Go 命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Vendoring"><span class="nav-number">3.1.1.</span> <span class="nav-text">Vendoring</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Flags"><span class="nav-number">3.1.2.</span> <span class="nav-text">Flags</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#环境变量"><span class="nav-number">3.1.3.</span> <span class="nav-text">环境变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模块外的命令"><span class="nav-number">3.1.4.</span> <span class="nav-text">模块外的命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#incompatible-版本"><span class="nav-number">3.1.5.</span> <span class="nav-text">+incompatible 版本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#go-mod-文件的维护"><span class="nav-number">3.1.6.</span> <span class="nav-text">go.mod 文件的维护</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#模块下载"><span class="nav-number">3.1.7.</span> <span class="nav-text">模块下载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试"><span class="nav-number">3.1.8.</span> <span class="nav-text">测试</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#运行时"><span class="nav-number">4.</span> <span class="nav-text">运行时</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#编译器"><span class="nav-number">5.</span> <span class="nav-text">编译器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#核心库"><span class="nav-number">6.</span> <span class="nav-text">核心库</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#新byte序列hash包"><span class="nav-number">6.1.</span> <span class="nav-text">新byte序列hash包</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#库的主要变化"><span class="nav-number">6.2.</span> <span class="nav-text">库的主要变化</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#crypto-tls"><span class="nav-number">6.2.1.</span> <span class="nav-text">crypto/tls</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#crypto-x509"><span class="nav-number">6.2.2.</span> <span class="nav-text">crypto/x509</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#debug-dwarf"><span class="nav-number">6.2.3.</span> <span class="nav-text">debug/dwarf</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#encoding-asn1"><span class="nav-number">6.2.4.</span> <span class="nav-text">encoding/asn1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#encoding-json"><span class="nav-number">6.2.5.</span> <span class="nav-text">encoding/json</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#go-build"><span class="nav-number">6.2.6.</span> <span class="nav-text">go/build</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#go-doc"><span class="nav-number">6.2.7.</span> <span class="nav-text">go/doc</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#io-ioutil"><span class="nav-number">6.2.8.</span> <span class="nav-text">io/ioutil</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#log"><span class="nav-number">6.2.9.</span> <span class="nav-text">log</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#math"><span class="nav-number">6.2.10.</span> <span class="nav-text">math</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#math-big"><span class="nav-number">6.2.11.</span> <span class="nav-text">math/big</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#math-bits"><span class="nav-number">6.2.12.</span> <span class="nav-text">math/bits</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mime"><span class="nav-number">6.2.13.</span> <span class="nav-text">mime</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mime-multipart"><span class="nav-number">6.2.14.</span> <span class="nav-text">mime/multipart</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#net-http"><span class="nav-number">6.2.15.</span> <span class="nav-text">net/http</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#net-http-httptest"><span class="nav-number">6.2.16.</span> <span class="nav-text">net/http/httptest</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#net-textproto"><span class="nav-number">6.2.17.</span> <span class="nav-text">net/textproto</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#net-Unmarshaleer"><span class="nav-number">6.2.18.</span> <span class="nav-text">net/Unmarshaleer</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#os-signal"><span class="nav-number">6.2.19.</span> <span class="nav-text">os/signal</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#plugin"><span class="nav-number">6.2.20.</span> <span class="nav-text">plugin</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#reflect"><span class="nav-number">6.2.21.</span> <span class="nav-text">reflect</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#runtime"><span class="nav-number">6.2.22.</span> <span class="nav-text">runtime</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#runtime-pprof"><span class="nav-number">6.2.23.</span> <span class="nav-text">runtime/pprof</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#strconv"><span class="nav-number">6.2.24.</span> <span class="nav-text">strconv</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sync"><span class="nav-number">6.2.25.</span> <span class="nav-text">sync</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#testing"><span class="nav-number">6.2.26.</span> <span class="nav-text">testing</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#text-template"><span class="nav-number">6.2.27.</span> <span class="nav-text">text/template</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#unicode"><span class="nav-number">6.2.28.</span> <span class="nav-text">unicode</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">D.H.Jack</span>
+
+  
+</div>
+
+
+  <div class="powered-by">
+    由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+  </div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="theme-info">
+    主题 &mdash;
+    <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+      NexT.Mist
+    </a>
+  </div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
