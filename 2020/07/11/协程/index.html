@@ -94,17 +94,17 @@
 
 
 
-<meta name="description" content="最近面试了很多应聘Golang的候选人，其实很失望，居然没有一个把我提出的几个Golang相关的问题全部答对。看他们的工作简历，确实也用到了。只是大部分都停留在“可用”上面了。很少有人能持续深入的了解一门语言。很少有人能突破当下的舒适区，去探索未知的边界。对于简历上面提到的各种技能，其中好的面试者能对某一点将的比较清楚，基本点都能描述出来。而普通的面试者都是泛泛而谈，无法讲出核心特性。每个人都在工">
+<meta name="description" content="最近面试的同学，都找到GPM或者GMP模型，但是具体的内容很少有能将清楚的。  进程是分配资源的最小单元 线程的调度的最小单元 协程是用户态线程  从历史的演化来看，先有进程，解决了共享CPU的问题。多个进程可以共享CPU，就像在同时运行一样。然后发展出线程，解决需要同时共享CPU和内存的问题。线程可以共享一个进程的内存空间。然后演化出协程，解决的线程调度需要内核态的转换，开销太大的问题。线程是抢">
 <meta property="og:type" content="article">
-<meta property="og:title" content="面试，个人成长，工作需要">
-<meta property="og:url" content="https://dhjack.github.io/2020/07/04/面试，个人成长，工作需要/index.html">
+<meta property="og:title" content="协程">
+<meta property="og:url" content="https://dhjack.github.io/2020/07/11/协程/index.html">
 <meta property="og:site_name" content="DHJACK&#39;s Blog">
-<meta property="og:description" content="最近面试了很多应聘Golang的候选人，其实很失望，居然没有一个把我提出的几个Golang相关的问题全部答对。看他们的工作简历，确实也用到了。只是大部分都停留在“可用”上面了。很少有人能持续深入的了解一门语言。很少有人能突破当下的舒适区，去探索未知的边界。对于简历上面提到的各种技能，其中好的面试者能对某一点将的比较清楚，基本点都能描述出来。而普通的面试者都是泛泛而谈，无法讲出核心特性。每个人都在工">
+<meta property="og:description" content="最近面试的同学，都找到GPM或者GMP模型，但是具体的内容很少有能将清楚的。  进程是分配资源的最小单元 线程的调度的最小单元 协程是用户态线程  从历史的演化来看，先有进程，解决了共享CPU的问题。多个进程可以共享CPU，就像在同时运行一样。然后发展出线程，解决需要同时共享CPU和内存的问题。线程可以共享一个进程的内存空间。然后演化出协程，解决的线程调度需要内核态的转换，开销太大的问题。线程是抢">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-07-04T02:38:07.942Z">
+<meta property="og:updated_time" content="2020-07-11T13:22:19.772Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="面试，个人成长，工作需要">
-<meta name="twitter:description" content="最近面试了很多应聘Golang的候选人，其实很失望，居然没有一个把我提出的几个Golang相关的问题全部答对。看他们的工作简历，确实也用到了。只是大部分都停留在“可用”上面了。很少有人能持续深入的了解一门语言。很少有人能突破当下的舒适区，去探索未知的边界。对于简历上面提到的各种技能，其中好的面试者能对某一点将的比较清楚，基本点都能描述出来。而普通的面试者都是泛泛而谈，无法讲出核心特性。每个人都在工">
+<meta name="twitter:title" content="协程">
+<meta name="twitter:description" content="最近面试的同学，都找到GPM或者GMP模型，但是具体的内容很少有能将清楚的。  进程是分配资源的最小单元 线程的调度的最小单元 协程是用户态线程  从历史的演化来看，先有进程，解决了共享CPU的问题。多个进程可以共享CPU，就像在同时运行一样。然后发展出线程，解决需要同时共享CPU和内存的问题。线程可以共享一个进程的内存空间。然后演化出协程，解决的线程调度需要内核态的转换，开销太大的问题。线程是抢">
 
 
 
@@ -133,13 +133,13 @@
 
 
 
-  <link rel="canonical" href="https://dhjack.github.io/2020/07/04/面试，个人成长，工作需要/">
+  <link rel="canonical" href="https://dhjack.github.io/2020/07/11/协程/">
 
 
 
 
 
-  <title>面试，个人成长，工作需要 | DHJACK's Blog</title>
+  <title>协程 | DHJACK's Blog</title>
   
 
 
@@ -256,7 +256,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://dhjack.github.io/2020/07/04/面试，个人成长，工作需要/">
+    <link itemprop="mainEntityOfPage" href="https://dhjack.github.io/2020/07/11/协程/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="D.H.Jack">
@@ -273,7 +273,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">面试，个人成长，工作需要</h1>
+          <h1 class="post-title" itemprop="name headline">协程</h1>
         
 
         <div class="post-meta">
@@ -285,8 +285,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-07-04T09:58:59+08:00">
-                2020-07-04
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-07-11T10:38:17+08:00">
+                2020-07-11
               </time>
             
 
@@ -323,7 +323,21 @@
       
 
       
-        <p>最近面试了很多应聘Golang的候选人，其实很失望，居然没有一个把我提出的几个Golang相关的问题全部答对。看他们的工作简历，确实也用到了。只是大部分都停留在“可用”上面了。很少有人能持续深入的了解一门语言。很少有人能突破当下的舒适区，去探索未知的边界。对于简历上面提到的各种技能，其中好的面试者能对某一点将的比较清楚，基本点都能描述出来。而普通的面试者都是泛泛而谈，无法讲出核心特性。<br>每个人都在工作，为什么有些人越做越好？每个人都在生活，为什么有些人越过越好？有多少人花了时间和精力去刻意的成长?大部分人都是在浑浑噩噩做着布朗运动。<br>回到面试的话题上来，到底如何面试？什么样的候选人算一个合格的后续人？全部问题回答正确？这只是知识，或者说这些其实都是可以谷歌得到的。是一个关键点，但不是判断合格的标准。核心在于工作需要。当前的工作需要什么样的人才？需要频繁交流？需要深挖算法？需要不断累积业务？最近看到几个词：精力充沛，有干劲，有想法。比较打动我。我当然是希望招进来的人，是有干劲的，并且是能持续输出的。而不是给一个任务，就完成一个任务。要能独挡一面，分担工作压力。而这些要的不仅仅是知识，而是性格和能力。所以一个合格的面试者，不仅仅要能掌握基本的知识，更要有一份饥渴的状态，积极工作，有干劲，并且是精力充沛，能持续输出的。简而言之，就是能提供持续的价值。<br>那换个角度，有没有什么工作是不需要精力充沛，有干劲，有想法的了？</p>
+        <p>最近面试的同学，都找到GPM或者GMP模型，但是具体的内容很少有能将清楚的。</p>
+<ul>
+<li>进程是分配资源的最小单元</li>
+<li>线程的调度的最小单元</li>
+<li>协程是用户态线程</li>
+</ul>
+<p>从历史的演化来看，先有进程，解决了共享CPU的问题。多个进程可以共享CPU，就像在同时运行一样。然后发展出线程，解决需要同时共享CPU和内存的问题。线程可以共享一个进程的内存空间。然后演化出协程，解决的线程调度需要内核态的转换，开销太大的问题。<br>线程是抢占式调度，由内核控制。协程是协作式调度，由自己主动让出cpu。和nginx的基于消息的处理流程由异曲同工之妙，都是要最大化cpu的利用率。</p>
+<h1 id="GMP"><a href="#GMP" class="headerlink" title="GMP"></a>GMP</h1><p>G是协程，M是线程，P是逻辑处理器。新创建的协程会先放入全局队列中，然后分配给局部队列。本地队列会和一个线程绑定。线程先从本地队列取协程执行，如果没有，在从全局队列里面取，如果还没有，会从其他局部队列获取，还有netpoll队列。协程如果执行到一定时间片会被调度出来让出时间片，或者执行了io堵塞操作，会被调度到netpoll等待队列中。</p>
+<h1 id="1-14以上版本的调度变化"><a href="#1-14以上版本的调度变化" class="headerlink" title="1.14以上版本的调度变化"></a>1.14以上版本的调度变化</h1><p>1.13及以下，是基于编译时给函数插入抢占命令来实现调度的。一个无函数调用的for长时间循环，会导致其他协程无法被调度。而1.14是基于信号的真抢占式调度。以下代码，在1.13及以下版本，不会打印world。在1.14版本会打印wrold。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">func say(s string) &#123;</span><br><span class="line">        for i := 0; i &lt; 50; i++ &#123;</span><br><span class="line">                fmt.Println(s)</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func say2(s string) string&#123;</span><br><span class="line">        return s</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func main() &#123;</span><br><span class="line">        runtime.GOMAXPROCS(1)</span><br><span class="line">        go say(&quot;world&quot;)</span><br><span class="line"></span><br><span class="line">        fmt.Printf(&quot;in min&quot;)</span><br><span class="line">        for &#123;</span><br><span class="line">          say2(&quot;hello&quot;)</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>最好不得不感慨下，当我想写一篇关于golang协程的文章时，居然已经有人写好了，而且写的很好。</p>
+<p>ps:</p>
+<ul>
+<li>runtime.GOMAXPROCS创建的不是线程M的数量，而是处理器P的数量</li>
+</ul>
 
       
     </div>
@@ -348,8 +362,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/06/27/时间管理/" rel="next" title="时间管理">
-                <i class="fa fa-chevron-left"></i> 时间管理
+              <a href="/2020/07/04/面试，个人成长，工作需要/" rel="next" title="面试，个人成长，工作需要">
+                <i class="fa fa-chevron-left"></i> 面试，个人成长，工作需要
               </a>
             
           </div>
@@ -357,10 +371,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2020/07/11/协程/" rel="prev" title="协程">
-                协程 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -412,8 +422,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image" src="http://oe1zttqsu.bkt.clouddn.com/xiongwen_circle_avatar.png" alt="D.H.Jack">
           <p class="site-author-name" itemprop="name">D.H.Jack</p>
@@ -464,6 +483,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#GMP"><span class="nav-number">1.</span> <span class="nav-text">GMP</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-14以上版本的调度变化"><span class="nav-number">2.</span> <span class="nav-text">1.14以上版本的调度变化</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
