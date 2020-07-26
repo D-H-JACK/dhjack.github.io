@@ -94,17 +94,20 @@
 
 
 
-<meta name="description" content="最近看《深入理解Nginx》，知道它是事件驱动模式。联想到webkit，redis。为什么都是事件驱动模式。一定是事件驱动模式才能最大程度利用系统资源？有没有其他的模式？自己过去编写的模块是什么模式？ 避免的频繁的上下文切换、用户态内核态的转换，充分利用了cpu资源。好像golang的协程一定程度上做的就是这个事情？避免大量线程的切换。自己写的模块好像大部分只是处理业务。谈不上驱动？很少考虑到li">
+<meta name="description" content="最近看《认知红利》，里面讲到一个财富分配实验：100个人，每人初始资金是100元，每轮游戏每个人都要拿1元随机给另外一个人，问当这个游戏进行数万轮后，最后这100个人的财富分布会是怎样的？有三个选项：  还是平均分布 正态分布，少数人有钱，少数人没钱，多数人都在平均位置 幂律分布  一个人从18岁到65岁，大概是17000天，所以游戏也模拟运行17000次。这个问题怎么想都落入随机的字眼中，结果想">
 <meta property="og:type" content="article">
-<meta property="og:title" content="nginx学习心得">
-<meta property="og:url" content="https://dhjack.github.io/2020/05/03/nginx学习心得/index.html">
+<meta property="og:title" content="财富分配">
+<meta property="og:url" content="https://dhjack.github.io/2020/07/26/财富分配/index.html">
 <meta property="og:site_name" content="DHJACK&#39;s Blog">
-<meta property="og:description" content="最近看《深入理解Nginx》，知道它是事件驱动模式。联想到webkit，redis。为什么都是事件驱动模式。一定是事件驱动模式才能最大程度利用系统资源？有没有其他的模式？自己过去编写的模块是什么模式？ 避免的频繁的上下文切换、用户态内核态的转换，充分利用了cpu资源。好像golang的协程一定程度上做的就是这个事情？避免大量线程的切换。自己写的模块好像大部分只是处理业务。谈不上驱动？很少考虑到li">
+<meta property="og:description" content="最近看《认知红利》，里面讲到一个财富分配实验：100个人，每人初始资金是100元，每轮游戏每个人都要拿1元随机给另外一个人，问当这个游戏进行数万轮后，最后这100个人的财富分布会是怎样的？有三个选项：  还是平均分布 正态分布，少数人有钱，少数人没钱，多数人都在平均位置 幂律分布  一个人从18岁到65岁，大概是17000天，所以游戏也模拟运行17000次。这个问题怎么想都落入随机的字眼中，结果想">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-05-03T06:26:06.937Z">
+<meta property="og:image" content="https://dhjack.github.io/images/Wealth%20distribution%20Debt.png">
+<meta property="og:image" content="https://dhjack.github.io/images/Wealth%20distribution.png">
+<meta property="og:updated_time" content="2020-07-26T09:55:19.698Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="nginx学习心得">
-<meta name="twitter:description" content="最近看《深入理解Nginx》，知道它是事件驱动模式。联想到webkit，redis。为什么都是事件驱动模式。一定是事件驱动模式才能最大程度利用系统资源？有没有其他的模式？自己过去编写的模块是什么模式？ 避免的频繁的上下文切换、用户态内核态的转换，充分利用了cpu资源。好像golang的协程一定程度上做的就是这个事情？避免大量线程的切换。自己写的模块好像大部分只是处理业务。谈不上驱动？很少考虑到li">
+<meta name="twitter:title" content="财富分配">
+<meta name="twitter:description" content="最近看《认知红利》，里面讲到一个财富分配实验：100个人，每人初始资金是100元，每轮游戏每个人都要拿1元随机给另外一个人，问当这个游戏进行数万轮后，最后这100个人的财富分布会是怎样的？有三个选项：  还是平均分布 正态分布，少数人有钱，少数人没钱，多数人都在平均位置 幂律分布  一个人从18岁到65岁，大概是17000天，所以游戏也模拟运行17000次。这个问题怎么想都落入随机的字眼中，结果想">
+<meta name="twitter:image" content="https://dhjack.github.io/images/Wealth%20distribution%20Debt.png">
 
 
 
@@ -133,13 +136,13 @@
 
 
 
-  <link rel="canonical" href="https://dhjack.github.io/2020/05/03/nginx学习心得/">
+  <link rel="canonical" href="https://dhjack.github.io/2020/07/26/财富分配/">
 
 
 
 
 
-  <title>nginx学习心得 | DHJACK's Blog</title>
+  <title>财富分配 | DHJACK's Blog</title>
   
 
 
@@ -256,7 +259,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://dhjack.github.io/2020/05/03/nginx学习心得/">
+    <link itemprop="mainEntityOfPage" href="https://dhjack.github.io/2020/07/26/财富分配/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="D.H.Jack">
@@ -273,7 +276,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">nginx学习心得</h1>
+          <h1 class="post-title" itemprop="name headline">财富分配</h1>
         
 
         <div class="post-meta">
@@ -285,8 +288,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-05-03T14:07:23+08:00">
-                2020-05-03
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-07-26T17:20:56+08:00">
+                2020-07-26
               </time>
             
 
@@ -323,8 +326,19 @@
       
 
       
-        <p>最近看《深入理解Nginx》，知道它是事件驱动模式。联想到webkit，redis。为什么都是事件驱动模式。一定是事件驱动模式才能最大程度利用系统资源？有没有其他的模式？自己过去编写的模块是什么模式？</p>
-<p>避免的频繁的上下文切换、用户态内核态的转换，充分利用了cpu资源。<br>好像golang的协程一定程度上做的就是这个事情？避免大量线程的切换。<br>自己写的模块好像大部分只是处理业务。谈不上驱动？很少考虑到linux系统层面的调度状态。</p>
+        <p>最近看《认知红利》，里面讲到一个财富分配实验：100个人，每人初始资金是100元，每轮游戏每个人都要拿1元随机给另外一个人，问当这个游戏进行数万轮后，最后这100个人的财富分布会是怎样的？有三个选项：</p>
+<ul>
+<li>还是平均分布</li>
+<li>正态分布，少数人有钱，少数人没钱，多数人都在平均位置</li>
+<li>幂律分布</li>
+</ul>
+<p>一个人从18岁到65岁，大概是17000天，所以游戏也模拟运行17000次。这个问题怎么想都落入随机的字眼中，结果想当然的是平均分布。但是作者揭露的答案是选项三，大多数都没钱，少数人非常有钱。于是我不信，自己写了一个程序模拟。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/python</span><br><span class="line"># -*- coding: UTF-8 -*-</span><br><span class="line"></span><br><span class="line">import matplotlib.pyplot as plt</span><br><span class="line">import time</span><br><span class="line">import random</span><br><span class="line"></span><br><span class="line">p = []</span><br><span class="line">for i in range(100):</span><br><span class="line">    p.append(100)</span><br><span class="line"></span><br><span class="line">print(p)</span><br><span class="line">print(sum(p))</span><br><span class="line"></span><br><span class="line">n=17000</span><br><span class="line">for i in range(n):</span><br><span class="line">    for j in range(100):</span><br><span class="line">        other = random.randint(0,98)</span><br><span class="line">        if other &gt;= j:</span><br><span class="line">            other+=1</span><br><span class="line">        p[j]-=1</span><br><span class="line">        p[other]+=1</span><br><span class="line"></span><br><span class="line">p.sort()</span><br><span class="line">print(p)</span><br><span class="line">print(sum(p))</span><br><span class="line"></span><br><span class="line">fig, ax = plt.subplots()</span><br><span class="line">ax.plot([i for i in range(100)], p)</span><br><span class="line">plt.show()</span><br></pre></td></tr></table></figure>
+<p>结果很可怕，一半的人居然都是负债，大部分财富集中在少数人手中。</p>
+<p><img src="/images/Wealth distribution Debt.png" alt="财富分配，允许负债"></p>
+<p>简化的版本不允许负债，结果也很反常识。即便在最公平的环境下，最终的结果也是少数人掌握大部分财富。</p>
+<p><img src="/images/Wealth distribution.png" alt="财富分配，不允许负债"></p>
+<p>不得不重新思考公平的含义。</p>
 
       
     </div>
@@ -349,8 +363,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/04/25/研究k8s的server/" rel="next" title="研究k8s的server">
-                <i class="fa fa-chevron-left"></i> 研究k8s的server
+              <a href="/2020/07/18/gc/" rel="next" title="gc">
+                <i class="fa fa-chevron-left"></i> gc
               </a>
             
           </div>
@@ -358,10 +372,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2020/05/10/如何编程/" rel="prev" title="如何编程">
-                如何编程 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
