@@ -94,17 +94,17 @@
 
 
 
-<meta name="description" content="《GO程序设计语言》的练习9.4和9.5很有意思。这里尝试看看效果。 环境：Go1.9.2，内存7G，cpu：Intel(R) Core(TM) i5-7500 CPU @ 3.40GHz 第一个问题：使用通道构造一个把任意多个goroutine串联在一起的流水线程序。在内存耗尽前你能创建的最大流水线级数是多少？开始纠结在，到底是一个通道，还是多个通道。一个通道应该不可能，不知道谁是谁，怎么能是串">
+<meta name="description" content="给你的操作系统开发以下流程：   一个CPU资源的USE方法检查清单。包括如何获取每项指标（例如，执行哪条命令）以及如何解释结果。在安装或者使用额外软件产品前，尽量使用已有的操作系统观察工具 一个CPU资源的负载特征归纳检查清单。包括如何获取每项指标，首先尽量使用已有的操作系统观察工具。  答： 好像直观的看看总体负载，然后看看每个cpu的利用率等等？uptime、vmstat、top、sar、">
 <meta property="og:type" content="article">
-<meta property="og:title" content="测试golang协程">
-<meta property="og:url" content="https://dhjack.github.io/2020/06/20/测试golang协程/index.html">
+<meta property="og:title" content="第六章习题">
+<meta property="og:url" content="https://dhjack.github.io/2020/11/07/第六章习题/index.html">
 <meta property="og:site_name" content="DHJACK&#39;s Blog">
-<meta property="og:description" content="《GO程序设计语言》的练习9.4和9.5很有意思。这里尝试看看效果。 环境：Go1.9.2，内存7G，cpu：Intel(R) Core(TM) i5-7500 CPU @ 3.40GHz 第一个问题：使用通道构造一个把任意多个goroutine串联在一起的流水线程序。在内存耗尽前你能创建的最大流水线级数是多少？开始纠结在，到底是一个通道，还是多个通道。一个通道应该不可能，不知道谁是谁，怎么能是串">
+<meta property="og:description" content="给你的操作系统开发以下流程：   一个CPU资源的USE方法检查清单。包括如何获取每项指标（例如，执行哪条命令）以及如何解释结果。在安装或者使用额外软件产品前，尽量使用已有的操作系统观察工具 一个CPU资源的负载特征归纳检查清单。包括如何获取每项指标，首先尽量使用已有的操作系统观察工具。  答： 好像直观的看看总体负载，然后看看每个cpu的利用率等等？uptime、vmstat、top、sar、">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-06-20T04:03:19.796Z">
+<meta property="og:updated_time" content="2020-11-07T08:31:38.464Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="测试golang协程">
-<meta name="twitter:description" content="《GO程序设计语言》的练习9.4和9.5很有意思。这里尝试看看效果。 环境：Go1.9.2，内存7G，cpu：Intel(R) Core(TM) i5-7500 CPU @ 3.40GHz 第一个问题：使用通道构造一个把任意多个goroutine串联在一起的流水线程序。在内存耗尽前你能创建的最大流水线级数是多少？开始纠结在，到底是一个通道，还是多个通道。一个通道应该不可能，不知道谁是谁，怎么能是串">
+<meta name="twitter:title" content="第六章习题">
+<meta name="twitter:description" content="给你的操作系统开发以下流程：   一个CPU资源的USE方法检查清单。包括如何获取每项指标（例如，执行哪条命令）以及如何解释结果。在安装或者使用额外软件产品前，尽量使用已有的操作系统观察工具 一个CPU资源的负载特征归纳检查清单。包括如何获取每项指标，首先尽量使用已有的操作系统观察工具。  答： 好像直观的看看总体负载，然后看看每个cpu的利用率等等？uptime、vmstat、top、sar、">
 
 
 
@@ -133,13 +133,13 @@
 
 
 
-  <link rel="canonical" href="https://dhjack.github.io/2020/06/20/测试golang协程/">
+  <link rel="canonical" href="https://dhjack.github.io/2020/11/07/第六章习题/">
 
 
 
 
 
-  <title>测试golang协程 | DHJACK's Blog</title>
+  <title>第六章习题 | DHJACK's Blog</title>
   
 
 
@@ -256,7 +256,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://dhjack.github.io/2020/06/20/测试golang协程/">
+    <link itemprop="mainEntityOfPage" href="https://dhjack.github.io/2020/11/07/第六章习题/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="D.H.Jack">
@@ -273,7 +273,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">测试golang协程</h1>
+          <h1 class="post-title" itemprop="name headline">第六章习题</h1>
         
 
         <div class="post-meta">
@@ -285,8 +285,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-06-20T11:43:06+08:00">
-                2020-06-20
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-11-07T13:42:47+08:00">
+                2020-11-07
               </time>
             
 
@@ -323,20 +323,85 @@
       
 
       
-        <p>《GO程序设计语言》的练习9.4和9.5很有意思。这里尝试看看效果。</p>
-<p>环境：Go1.9.2，内存7G，cpu：Intel(R) Core(TM) i5-7500 CPU @ 3.40GHz</p>
-<p>第一个问题：使用通道构造一个把任意多个goroutine串联在一起的流水线程序。在内存耗尽前你能创建的最大流水线级数是多少？<br>开始纠结在，到底是一个通道，还是多个通道。一个通道应该不可能，不知道谁是谁，怎么能是串联。所以实现上是每个goroutine创建一个通道。然后是如何在内存耗尽前打印goroutine个数？开始是做了一个信号监听器，监听到kill信号，就打印当前goroutine数，然后退出。后来发现是多余的。程序如果内存不足，会直接报如下错误，并打印最新的协程id。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">fatal error: runtime: out of memory</span><br><span class="line"></span><br><span class="line">goroutine 1926230 [running]:</span><br><span class="line">runtime.systemstack_switch()</span><br></pre></td></tr></table></figure>
-<p>实际的效果是当内存在64.4%的时候，程序退出了，goroutine是1926230个。也就是接近200万。4.5G内存创建200万协程数量，不知道是什么概念。不过过程很长的。开始以为内存会涨的很快，但是实际现象是内存涨的很慢。</p>
-<p>第二个问题：一个值穿过整个流水线需要多久？</p>
+        <ol start="4">
+<li>给你的操作系统开发以下流程：</li>
+</ol>
 <ul>
-<li>1千个goroutine，0.15ms</li>
-<li>1万个goroutine，1.56ms</li>
-<li>10万个goroutine，18.2ms</li>
+<li>一个CPU资源的USE方法检查清单。包括如何获取每项指标（例如，执行哪条命令）以及如何解释结果。在安装或者使用额外软件产品前，尽量使用已有的操作系统观察工具</li>
+<li>一个CPU资源的负载特征归纳检查清单。包括如何获取每项指标，首先尽量使用已有的操作系统观察工具。</li>
 </ul>
-<p>看来和goroutine是成正比的。不过感觉也挺耗时的。</p>
-<p>第三个问题：写一个程序，两个goroutine通过两个无缓冲通道来互相转发消息。这个程序能维持每秒多少次通信？</p>
-<p>基本维持在 4.759308065994737e+06 次。也就是470万的样子。</p>
+<p>答：</p>
+<p>好像直观的看看总体负载，然后看看每个cpu的利用率等等？uptime、vmstat、top、sar、mpstat、pidsat、time、ps</p>
+<table>
+<thead>
+<tr>
+<th>命令</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>uptime</td>
+<td>平均负载</td>
+</tr>
+<tr>
+<td>vmstat 1</td>
+<td>包括系统范围的CPU平均负载，也包括io，内存信息。是系统整体的</td>
+</tr>
+<tr>
+<td>mpstat -P ALL 1</td>
+<td>单个CPU的统计信息。可以查看每个CPU的信息，包括：%usr,%sys,%idle</td>
+</tr>
+<tr>
+<td>sar</td>
+<td>历史统计信息</td>
+</tr>
+<tr>
+<td>ps</td>
+<td>进程信息。包括CPU使用率、内存占比、虚拟内存、物理内存，CPU时长</td>
+</tr>
+<tr>
+<td>top</td>
+<td>监控每个进程/线程的CPU用量。和ps的数据很像。更像是一些命令结果的汇聚</td>
+</tr>
+<tr>
+<td>pidstat</td>
+<td>每个进程/线程的CPU用量分解。可以看到%usr，%system</td>
+</tr>
+<tr>
+<td>time</td>
+<td>给一个命令计时，带CPU用量分解。可以显示比较详细的指标</td>
+</tr>
+</tbody>
+</table>
+<p>特征清单如下，关键是如何测量？</p>
+<ul>
+<li>平均负载（使用率+饱和度）<br>uptime、top</li>
+<li>用户时间与系统时间之比<br>uptime、top，sar</li>
+<li>系统调用频率</li>
+<li>自愿上下文切换频率<br>time可以看自愿/非自愿上下文切换次数。但是频率怎么算?</li>
+<li>中断频率<br>mpstat、top</li>
+<li>整个系统范围内的CPU使用率是多少？每个CPU呢？<br>mpstat</li>
+<li>CPU负载的并发程度如何？是单线程吗？有多少线程？<br>mpstat</li>
+<li>哪个应用程序或者用户在使用CPU？用了多少？<br>pidstat、top</li>
+<li>哪个内核线程在使用CPU？用了多少？</li>
+<li>中断的CPU用量是多少？<br>mpstat：%irq，%soft。<br>top：%hi，%si</li>
+<li>CPU互联的使用率是多少？</li>
+<li>为什么CPU被使用（用户和内核级别调用路径）</li>
+<li>遇到了什么类型的停滞周期？</li>
+</ul>
+<ol start="5">
+<li>执行这些任务：</li>
+</ol>
+<ul>
+<li>选择一个应用程序，剖析它的用户级CPU用量。展示出哪条代码路径耗时了最多的CPU</li>
+</ul>
+<p>答：<br>以经典的斐波那契数列来作为示范程序：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">package main</span><br><span class="line"></span><br><span class="line">import (</span><br><span class="line">        &quot;fmt&quot;</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">func fib(n int, c chan int) &#123;</span><br><span class="line">        a, b := 0, 1</span><br><span class="line">        for i := 0; ; i++ &#123;</span><br><span class="line">                a, b = b, a+b</span><br><span class="line">                c &lt;- a</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        close(c)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func main() &#123;</span><br><span class="line">        c := make(chan int, 10)</span><br><span class="line"></span><br><span class="line">        go fib(cap(c), c)</span><br><span class="line"></span><br><span class="line">        for i := range c &#123;</span><br><span class="line">                fmt.Println(i)</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>用到的主要命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">perf record -a -g -F 997 -p 47564</span><br><span class="line">perf report</span><br><span class="line">perf stat -p 47564</span><br><span class="line">perf top</span><br><span class="line"></span><br><span class="line">/usr/bin/time -v ./cpu</span><br><span class="line"></span><br><span class="line">sar -n TCP 1 10</span><br><span class="line">ss -nt</span><br></pre></td></tr></table></figure>
+<p>关于这个题目，就是用perf record/report即可，可以看到热点代码就是Fprint和channel通信相关的锁和方法。不过在实验中，引申出一个新的问题：执行 <code>./cpu &gt;/dev/null</code> 和 执行 <code>./cpu</code> 居然有很大区别。命令：<code>./cpu &gt;/dev/null</code> 的CPU利用率可以达到100%，但是命令<code>./cpu</code>的利用率上不来，只有3.3%左右，而且都是花在了系统时间。程序效果的最大区别就是输出会打印到终端。所以怀疑是io问题。iostat看了下，没有大的io，这个是查询磁盘的，而输出到终端是网络io。可以用 <code>sar -n TCP 1 10</code> 和 <code>ss -nt</code> 查看网络流量，oseg确实高了3倍。但是如何论证这个观点了：如何论证是由于网络IO导致CPU利用率不高。<br>看top的中断列也没有太明显变化。修改未定量任务，然后用time执行一看，发现主要不同是主动上下文切换比较高。突然想到用ps看看程序的运行状态，果然，基本是S，也就是休眠状态。不过还是没有找到直接的指标可以判断是网络的io导致程序cpu利用率不高</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Voluntary context switches: 2555                                                 Voluntary context switches: 104                     </span><br><span class="line">Involuntary context switches: 265                                                Involuntary context switches: 12</span><br></pre></td></tr></table></figure>
 
       
     </div>
@@ -361,8 +426,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/06/14/翻译-golang版本历史/" rel="next" title="(翻译) golang版本历史">
-                <i class="fa fa-chevron-left"></i> (翻译) golang版本历史
+              <a href="/2020/10/25/第5章-练习题4/" rel="next" title="第5章 练习题4">
+                <i class="fa fa-chevron-left"></i> 第5章 练习题4
               </a>
             
           </div>
@@ -370,10 +435,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2020/06/27/时间管理/" rel="prev" title="时间管理">
-                时间管理 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
